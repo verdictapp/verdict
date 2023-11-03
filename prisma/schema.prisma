@@ -12,9 +12,52 @@ datasource db {
 }
 
 model users {
+  id         Int      @id @default(autoincrement())
+  username   String   @unique
+  email      String   @unique
+  phone      String   @unique
+  password   String
+  verified   Boolean
+  membership Boolean
+  createdAt  DateTime @default(now())
+  votes      votes[]
+}
+
+model topics {
+  id          Int      @id @default(autoincrement())
+  title       String
+  description String
+  image       String
+  options     Json
+  stats       Json
+  timedStats  Json
+  state       Int
+  createdAt   DateTime @default(now())
+  votes       votes[]
+  tagged      tagged[]
+}
+
+model Tag {
+  id     Int      @id @default(autoincrement())
+  tag    String
+  tagged tagged[]
+}
+
+model votes {
   id        Int      @id @default(autoincrement())
-  name      String
-  email     String   @unique
-  image     String
+  vote      Int
+  changed   Boolean  @default(false)
   createdAt DateTime @default(now())
+  user      users?   @relation(fields: [userId], references: [id])
+  userId    Int?
+  topic     topics?  @relation(fields: [topicId], references: [id])
+  topicId   Int?
+}
+
+model tagged {
+  id       Int     @id @default(autoincrement())
+  Tag      Tag?    @relation(fields: [tagId], references: [id])
+  tagId    Int?
+  topics   topics? @relation(fields: [topicsId], references: [id])
+  topicsId Int?
 }
