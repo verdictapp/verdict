@@ -1,0 +1,12 @@
+-- AlterTable
+ALTER TABLE "topics" ALTER COLUMN "description" DROP NOT NULL,
+ALTER COLUMN "image" DROP NOT NULL;
+
+-- AlterTable
+ALTER TABLE "users" ADD COLUMN     "admin" BOOLEAN NOT NULL DEFAULT false,
+ALTER COLUMN "username" DROP NOT NULL,
+ALTER COLUMN "email" DROP NOT NULL,
+ALTER COLUMN "phone" DROP NOT NULL,
+ALTER COLUMN "password" DROP NOT NULL,
+ALTER COLUMN "verified" SET DEFAULT false,
+ALTER COLUMN "membership" SET DEFAULT false;

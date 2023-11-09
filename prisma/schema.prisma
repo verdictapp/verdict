@@ -13,12 +13,13 @@ datasource db {
 
 model users {
   id         Int      @id @default(autoincrement())
-  username   String   @unique
-  email      String   @unique
-  phone      String   @unique
-  password   String
-  verified   Boolean
-  membership Boolean
+  username   String?  @unique
+  email      String?  @unique
+  phone      String?  @unique
+  password   String?
+  verified   Boolean  @default(false)
+  membership Boolean  @default(false)
+  admin      Boolean  @default(false)
   createdAt  DateTime @default(now())
   votes      votes[]
 }
@@ -26,8 +27,8 @@ model users {
 model topics {
   id          Int      @id @default(autoincrement())
   title       String
-  description String
-  image       String
+  description String?
+  image       String?
   options     Json
   stats       Json
   timedStats  Json
