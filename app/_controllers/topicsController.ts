@@ -8,8 +8,8 @@ function getTagConditions(tag: any) {
     ? {
         tagged: {
           some: {
-            Tag: {
-              tag: {
+            tag: {
+              name: {
                 equals: tag,
               },
             },
@@ -39,37 +39,47 @@ function getStateConditions(state: any) {
  * @param state 0 for false, 1 for true
  * @param tag a string representing the tag
  * @param search a string representing the search keyword
+ * @param code language code (two letter representation of the language)
  * @returns a promise resolved as the topics that matches the criteria
  */
 export async function showTopics(
   state = undefined,
   tag = undefined,
-  search = ""
+  search = "",
+  code = "en"
 ) {
   let result = await prisma.topics.findMany({
     where: {
       ...getTagConditions(tag),
       ...getStateConditions(state),
-      title: {
-        contains: search,
+      topicInfo: {
+        some: {
+          title: {
+            contains: search,
+          },
+        },
       },
     },
     select: {
       id: true,
-      title: true,
-      description: true,
       image: true,
       createdAt: true,
-      options: true,
       state: true,
       stats: true,
+      topicInfo: {
+        where: {
+          languages: {
+            OR: [{ code: "en" }, { code: code.toLowerCase() }],
+          },
+        },
+      },
     },
   });
   return result;
 }
 
 /**
- * fetch the timed stats of a topic
+ * fetch the stats and the timed stats of a topic
  * @param id the topic Id
  * @returns a promise resolved as the timed stats of the topic
  */
@@ -80,6 +90,7 @@ export async function showTopicTimedStats(id: number) {
     },
     select: {
       id: true,
+      stats: true,
       timedStats: true,
     },
   });
@@ -95,25 +106,39 @@ export async function showTopicTimedStats(id: number) {
  * @param state defaults to 1 (enabled)
  */
 export async function storeTopic(
-  title: any,
-  description: any,
+  data = [
+    {
+      languageId: 0,
+      title: "title in English",
+      description: "description in English",
+      options: "options with English values",
+    },
+  ],
   image: any,
-  options: {},
   state = 1
 ) {
   let stats = {};
-  Object.keys(options).map((key) => {
+  Object.keys(data[0].options).map((key) => {
     stats[key] = { verified: 0, unverified: 0 };
   });
   await prisma.topics.create({
     data: {
-      title: title,
-      description: description,
       image: image,
-      options: options,
       state: state || 1,
       stats: stats,
       timedStats: {},
+      topicInfo: {
+        createMany: {
+          data: data.map((topicInfo) => {
+            return {
+              languageId: topicInfo.languageId,
+              title: topicInfo.title,
+              description: topicInfo.description,
+              options: topicInfo.options,
+            };
+          }),
+        },
+      },
     },
   });
 }
@@ -128,21 +153,12 @@ export async function destroyTopic(id: number) {
 
 /**
  * extracts the provided fields to be updated
- * @param title
- * @param description
  * @param image
  * @param state
  * @returns an object with only the defined values of the input
  */
-function getUpdateDataObject(
-  title: any,
-  description: any,
-  image: any,
-  state: 0 | 1
-) {
+function getUpdateDataObject(image: any, state: 0 | 1) {
   return {
-    ...(title && { title: title }),
-    ...(description && { description: description }),
     ...(image && { image: image }),
     ...(state && { state: state }),
   };
@@ -156,18 +172,53 @@ function getUpdateDataObject(
  * @param image
  * @param state
  */
-export async function updateTopic(
-  id: number,
-  title: any,
-  description: any,
-  image: any,
-  state: 0 | 1
-) {
+export async function updateTopic(id: number, image: any, state: 0 | 1) {
   await prisma.topics.update({
     where: {
       id: id,
     },
-    data: getUpdateDataObject(title, description, image, state),
+    data: getUpdateDataObject(image, state),
+  });
+  return new Response("OK");
+}
+
+/**
+ * extracts the provided fields to be updated
+ * @param image
+ * @param state
+ * @returns an object with only the defined values of the input
+ */
+function getTopicInfoUpdatableFields(
+  title: any,
+  description: any,
+  options: any
+) {
+  return {
+    ...(title && { title: title }),
+    ...(description && { description: description }),
+    ...(options && { options: options }),
+  };
+}
+
+/**
+ * update language specific info of a topic
+ * @param topicInfoId
+ * @param title
+ * @param description
+ * @param options
+ * @returns
+ */
+export async function updateTopicInfo(
+  topicInfoId: number,
+  title: any,
+  description: any,
+  options: any
+) {
+  await prisma.topicInfo.update({
+    where: {
+      id: topicInfoId,
+    },
+    data: getTopicInfoUpdatableFields(title, description, options),
   });
   return new Response("OK");
 }

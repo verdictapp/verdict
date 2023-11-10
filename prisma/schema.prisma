@@ -25,22 +25,38 @@ model users {
 }
 
 model topics {
-  id          Int      @id @default(autoincrement())
+  id         Int         @id @default(autoincrement())
+  image      String?
+  stats      Json
+  timedStats Json
+  state      Int
+  createdAt  DateTime    @default(now())
+  votes      votes[]
+  topicInfo  topicInfo[]
+  tagged     tagged[]
+}
+
+model languages {
+  id        Int         @id @default(autoincrement())
+  language  String      @unique
+  code      String      @unique
+  topicInfo topicInfo[]
+}
+
+model topicInfo {
+  id          Int        @id @default(autoincrement())
   title       String
   description String?
-  image       String?
   options     Json
-  stats       Json
-  timedStats  Json
-  state       Int
-  createdAt   DateTime @default(now())
-  votes       votes[]
-  tagged      tagged[]
+  topics      topics?    @relation(fields: [topicId], references: [id], onDelete: Cascade)
+  topicId     Int?
+  languages   languages? @relation(fields: [languageId], references: [id], onDelete: Cascade)
+  languageId  Int?
 }
 
 model tags {
   id     Int      @id @default(autoincrement())
-  tag    String
+  name   String
   tagged tagged[]
 }
 
