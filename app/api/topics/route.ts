@@ -10,14 +10,14 @@ export async function GET(request: NextRequest) {
   return new Response(JSON.stringify(result));
 }
 
-export async function POST(request: NextRequest) {
-  let body = await request.json();
-  await storeTopic(
-    body.title,
-    body.description,
-    body.image,
-    body.options,
-    body.state
-  );
-  return new Response("OK");
-}
+// export async function POST(request: NextRequest) {
+//   let body = await request.json();
+//   await storeTopic(
+//     body.title,
+//     body.description,
+//     body.image,
+//     body.options,
+//     body.state
+//   );
+//   return new Response("OK");
+// }

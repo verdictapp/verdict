@@ -1,3 +1,4 @@
+import prisma from "@/app/_lib/prisma";
 /**
  * structures an object for the tag condition on the topics table
  * @param tag a string representing the tag
