@@ -1,0 +1,4 @@
+export const DURATIONS = {
+  SHORT_TOKEN_EXPIRATION: "2h",
+  LONG_TOKEN_EXPIRATION: "168h", // week
+};

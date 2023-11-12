@@ -1,4 +1,5 @@
 import prisma from "@/app/_lib/prisma";
+
 /**
  * structures an object for the tag condition on the topics table
  * @param tag a string representing the tag
@@ -36,6 +37,25 @@ function getStateConditions(state: any) {
 }
 
 /**
+ * structures an object for the search condition on the topics table
+ * @param search a string representing the search keyword
+ * @returns a condition object for the search on the topics table
+ */
+function getSearchConditions(search: any) {
+  return search === ""
+    ? {
+        topicInfo: {
+          some: {
+            title: {
+              contains: search,
+            },
+          },
+        },
+      }
+    : {};
+}
+
+/**
  * fetch the topics (excluding the timed stats)
  * @param state 0 for false, 1 for true
  * @param tag a string representing the tag
@@ -53,13 +73,7 @@ export async function showTopics(
     where: {
       ...getTagConditions(tag),
       ...getStateConditions(state),
-      topicInfo: {
-        some: {
-          title: {
-            contains: search,
-          },
-        },
-      },
+      ...getSearchConditions(search),
     },
     select: {
       id: true,
