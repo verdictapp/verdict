@@ -20,11 +20,5 @@ export async function DELETE(request: NextRequest, { params }) {
 // updates a topic
 export async function PUT(request: NextRequest, { params }) {
   let body = await request.json();
-  await updateTopic(
-    Number(params.id),
-    body.title,
-    body.description,
-    body.image,
-    body.state
-  );
+  await updateTopic(Number(params.id), body.image, body.state);
 }

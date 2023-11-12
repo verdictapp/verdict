@@ -1,8 +1,59 @@
-import { DURATIONS } from "../_constants/durations";
-import { errors } from "../_enums/errorsEnums";
-import { createToken } from "../_lib/apiJwt";
+import { errors, userFilterFlags } from "../_enums/enums";
+import { createToken } from "../_lib/tokenHandler";
 import { hashPass, isSamePass } from "../_lib/hashing";
 import prisma from "@/app/_lib/prisma";
+
+/**
+ * create the condition object for the users search
+ * @param filterFlag userFilterFlags enum value
+ * @returns object with the right condition based on the flag
+ */
+function getFlagsCondition(filterFlag: number) {
+  if (filterFlag === undefined) {
+    return {};
+  }
+  switch (filterFlag) {
+    case userFilterFlags.admins_only:
+      return { admin: true };
+    case userFilterFlags.non_admins:
+      return { admin: false };
+    case userFilterFlags.members_only:
+      return { membership: true };
+    case userFilterFlags.non_members:
+      return { membership: false };
+    case userFilterFlags.unverified_only:
+      return { verified: false };
+    case userFilterFlags.verified_only:
+      return { verified: true };
+    default:
+      return {};
+  }
+}
+
+/**
+ * Fetch all the users based on the flag condition
+ * @param flags userFilterFlags enum value
+ * @returns all the users that matches the flags criteria
+ */
+export async function getUsers(filterFlag: number = undefined) {
+  let result = await prisma.users.findMany({
+    where: getFlagsCondition(filterFlag),
+  });
+  return result;
+}
+
+/**
+ * get a single user from the database
+ * @param id user's id
+ * @returns user object
+ */
+export async function getUser(id: number) {
+  return await prisma.users.findUnique({
+    where: {
+      id: id,
+    },
+  });
+}
 
 /**
  * tries to authenticate a user based on his username and password
@@ -12,18 +63,14 @@ import prisma from "@/app/_lib/prisma";
  */
 export async function authenticateUserLocally(
   username: string,
-  password: string,
-  rememberMe: boolean = false
+  password: string
 ) {
   let user = await prisma.users.findUnique({
     where: { username: username },
   });
   if (user && (await isSamePass(password, user.password))) {
     return {
-      token: await createToken(
-        user,
-        rememberMe && DURATIONS.LONG_TOKEN_EXPIRATION
-      ),
+      token: await createToken(user),
     };
   } else {
     return errors.wrong_credentials;

@@ -1,5 +1,5 @@
 import { authenticateUserLocally } from "@/app/_controllers/usersController";
-import { errors } from "@/app/_enums/errorsEnums";
+import { errors } from "@/app/_enums/enums";
 import { NextRequest } from "next/server";
 
 export async function POST(request: NextRequest) {
