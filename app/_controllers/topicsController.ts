@@ -237,3 +237,22 @@ export async function updateTopicInfo(
   });
   return new Response("OK");
 }
+
+/**
+ *
+ * @param topicId
+ * @param data
+ */
+export async function createTopicInfo(topicId: number, data) {
+  await prisma.topicInfo.createMany({
+    data: data.map((topicInfo) => {
+      return {
+        topicId: topicId,
+        languageId: topicInfo.languageId,
+        title: topicInfo.title,
+        description: topicInfo.description,
+        options: topicInfo.options,
+      };
+    }),
+  });
+}

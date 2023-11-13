@@ -84,8 +84,7 @@ export async function authenticateUserLocally(
  * @returns user object if the input is valid or username_taken enum value
  */
 export async function createUnverifiedUser(username: string, password: string) {
-  let result = await prisma.users.findUnique({ where: { username: username } });
-  if (result) {
+  if (usernameAvailable(username)) {
     return errors.username_taken;
   }
   return await prisma.users.create({
@@ -105,8 +104,7 @@ export async function createUnverifiedUser(username: string, password: string) {
  * @returns
  */
 export async function createVerifiedUser(username: string, password: string) {
-  let result = await prisma.users.findUnique({ where: { username: username } });
-  if (result) {
+  if (usernameAvailable(username)) {
     return errors.username_taken;
   }
   return await prisma.users.create({
@@ -125,8 +123,7 @@ export async function createVerifiedUser(username: string, password: string) {
  * @returns the created user(admin) or username_taken enum value
  */
 export async function createAdmin(username: string, password: string) {
-  let result = await prisma.users.findUnique({ where: { username: username } });
-  if (result) {
+  if (usernameAvailable(username)) {
     return errors.username_taken;
   }
   return await prisma.users.create({
@@ -137,4 +134,41 @@ export async function createAdmin(username: string, password: string) {
       admin: true,
     },
   });
+}
+
+/**
+ * updates user's username and password
+ * @param id user's id
+ * @param newUsername new username
+ * @param newPass new password
+ */
+export async function updateUserLocalInformation(
+  id: number,
+  newUsername: string,
+  newPass: string
+) {
+  if (usernameAvailable(newUsername)) {
+    return errors.username_taken;
+  }
+  await prisma.users.update({
+    where: {
+      id: id,
+    },
+    data: {
+      username: newUsername,
+      password: await hashPass(newPass),
+    },
+  });
+}
+
+/**
+ * check if the username is available
+ * @param username
+ * @returns wether this username is available or not
+ */
+export async function usernameAvailable(username: string) {
+  if (!username) return false;
+  return (await prisma.users.findUnique({ where: { username: username } }))
+    ? false
+    : true;
 }

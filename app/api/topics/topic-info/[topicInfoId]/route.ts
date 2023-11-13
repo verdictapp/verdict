@@ -5,7 +5,7 @@ import { NextRequest } from "next/server";
 export async function PUT(request: NextRequest, { params }) {
   let body = await request.json();
   await updateTopicInfo(
-    Number(params.id),
+    Number(params.topicInfoId),
     body.title,
     body.description,
     body.options

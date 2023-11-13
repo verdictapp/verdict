@@ -2,6 +2,8 @@ export enum errors {
   username_taken,
   wrong_credentials,
   not_admin,
+  already_voted,
+  already_changed_vote,
 }
 
 export enum userFilterFlags {
