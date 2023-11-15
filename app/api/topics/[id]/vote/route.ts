@@ -1,10 +1,10 @@
 import { createVote } from "@/app/_controllers/voteController";
-import { errors } from "@/app/_enums/enums";
+import { errorResponse, successResponse } from "@/app/_lib/responseGenerator";
 import { NextRequest } from "next/server";
 
-export async function GET(){
+export async function GET() {
   let result = await prisma.votes.findMany();
-  return new Response(JSON.stringify(result))
+  return successResponse(result);
 }
 
 // create a vote
@@ -15,11 +15,8 @@ export async function POST(request: NextRequest, { params }) {
     JSON.parse(request.headers.get("user")).id,
     body.vote
   );
-  if (result === errors.already_voted) {
-    return new Response("already voted");
+  if (result.errorCode) {
+    return errorResponse(result.errorCode);
   }
-  if (result === errors.already_changed_vote) {
-    return new Response("already changed vote");
-  }
-  return new Response("OK");
+  return successResponse();
 }

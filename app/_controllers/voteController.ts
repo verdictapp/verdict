@@ -1,5 +1,6 @@
 import { errors } from "../_enums/enums";
 import prisma from "@/app/_lib/prisma";
+import { errorReturn, successReturn } from "../_lib/controllerReturnGenerator";
 
 /**
  *
@@ -19,12 +20,9 @@ export async function createVote(
       userId: userId,
     },
   });
-  if (result) {
-    if (!result.changed) {
-      return updateVote(result.id, vote);
-    }
-    return errors.already_voted;
-  }
+
+  if (result) return errorReturn(errors.already_voted);
+
   await prisma.votes.create({
     data: {
       topicId: topicId,
@@ -32,6 +30,7 @@ export async function createVote(
       vote: vote,
     },
   });
+  return successReturn();
 }
 
 /**
@@ -46,8 +45,13 @@ export async function updateVote(voteId: number, vote: string) {
       id: voteId,
     },
   });
+  if (!result) return errorReturn(errors.did_not_vote_yet);
+
+  // vote didn't change
+  if (result.vote === vote) return errorReturn(errors.already_voted);
+
   if (result.changed) {
-    return errors.already_changed_vote;
+    return errorReturn(errors.already_changed_vote);
   }
   await prisma.votes.update({
     where: {
@@ -58,4 +62,5 @@ export async function updateVote(voteId: number, vote: string) {
       vote: vote,
     },
   });
+  return successReturn();
 }

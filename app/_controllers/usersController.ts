@@ -2,6 +2,7 @@ import { errors, userFilterFlags } from "../_enums/enums";
 import { createToken } from "../_lib/tokenHandler";
 import { hashPass, isSamePass } from "../_lib/hashing";
 import prisma from "@/app/_lib/prisma";
+import { errorReturn, successReturn } from "../_lib/controllerReturnGenerator";
 
 /**
  * create the condition object for the users search
@@ -39,7 +40,7 @@ export async function getUsers(filterFlag: number = undefined) {
   let result = await prisma.users.findMany({
     where: getFlagsCondition(filterFlag),
   });
-  return result;
+  return successReturn(result);
 }
 
 /**
@@ -48,11 +49,13 @@ export async function getUsers(filterFlag: number = undefined) {
  * @returns user object
  */
 export async function getUser(id: number) {
-  return await prisma.users.findUnique({
-    where: {
-      id: id,
-    },
-  });
+  return successReturn(
+    await prisma.users.findUnique({
+      where: {
+        id: id,
+      },
+    })
+  );
 }
 
 /**
@@ -69,11 +72,11 @@ export async function authenticateUserLocally(
     where: { username: username },
   });
   if (user && (await isSamePass(password, user.password))) {
-    return {
+    return successReturn({
       token: await createToken(user),
-    };
+    });
   } else {
-    return errors.wrong_credentials;
+    return errorReturn(errors.wrong_credentials);
   }
 }
 
@@ -85,14 +88,16 @@ export async function authenticateUserLocally(
  */
 export async function createUnverifiedUser(username: string, password: string) {
   if (usernameAvailable(username)) {
-    return errors.username_taken;
+    return errorReturn(errors.username_taken);
   }
-  return await prisma.users.create({
-    data: {
-      username: username,
-      password: await hashPass(password),
-    },
-  });
+  return successReturn(
+    await prisma.users.create({
+      data: {
+        username: username,
+        password: await hashPass(password),
+      },
+    })
+  );
 }
 
 /**
@@ -105,15 +110,17 @@ export async function createUnverifiedUser(username: string, password: string) {
  */
 export async function createVerifiedUser(username: string, password: string) {
   if (usernameAvailable(username)) {
-    return errors.username_taken;
+    return errorReturn(errors.username_taken);
   }
-  return await prisma.users.create({
-    data: {
-      username: username,
-      password: await hashPass(password),
-      verified: true,
-    },
-  });
+  return successReturn(
+    await prisma.users.create({
+      data: {
+        username: username,
+        password: await hashPass(password),
+        verified: true,
+      },
+    })
+  );
 }
 
 /**
@@ -124,16 +131,18 @@ export async function createVerifiedUser(username: string, password: string) {
  */
 export async function createAdmin(username: string, password: string) {
   if (usernameAvailable(username)) {
-    return errors.username_taken;
+    return errorReturn(errors.username_taken);
   }
-  return await prisma.users.create({
-    data: {
-      username: username,
-      password: await hashPass(password),
-      verified: true,
-      admin: true,
-    },
-  });
+  return successReturn(
+    await prisma.users.create({
+      data: {
+        username: username,
+        password: await hashPass(password),
+        verified: true,
+        admin: true,
+      },
+    })
+  );
 }
 
 /**
@@ -148,7 +157,7 @@ export async function updateUserLocalInformation(
   newPass: string
 ) {
   if (usernameAvailable(newUsername)) {
-    return errors.username_taken;
+    return errorReturn(errors.username_taken);
   }
   await prisma.users.update({
     where: {
@@ -159,6 +168,7 @@ export async function updateUserLocalInformation(
       password: await hashPass(newPass),
     },
   });
+  return successReturn();
 }
 
 /**
@@ -167,8 +177,10 @@ export async function updateUserLocalInformation(
  * @returns wether this username is available or not
  */
 export async function usernameAvailable(username: string) {
-  if (!username) return false;
-  return (await prisma.users.findUnique({ where: { username: username } }))
-    ? false
-    : true;
+  if (!username) return successReturn(false);
+  return successReturn(
+    (await prisma.users.findUnique({ where: { username: username } }))
+      ? false
+      : true
+  );
 }

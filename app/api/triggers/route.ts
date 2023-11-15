@@ -1,4 +1,5 @@
 import prisma from "@/app/_lib/prisma";
+import { successResponse } from "@/app/_lib/responseGenerator";
 
 export async function GET() {
   let result = await prisma.$queryRaw`
@@ -7,7 +8,7 @@ export async function GET() {
         GROUP BY table_name , trigger_name 
         ORDER BY table_name ,trigger_name;
     `;
-  return new Response(JSON.stringify(result));
+  return successResponse(result);
 }
 
 export async function POST() {
@@ -52,22 +53,22 @@ export async function POST() {
   await prisma.$executeRaw`
     CREATE OR REPLACE FUNCTION increment_timed_stats() RETURNS TRIGGER AS $$
     DECLARE
-    week_num INTEGER;
+    day_num INTEGER;
     month_num INTEGER;
     year_num INTEGER;
-    week_start DATE;
-    week_end DATE;
-    week_key TEXT;
+    -- week_start DATE;
+    -- week_end DATE;
+    date_key TEXT;
     temp TEXT;
     BEGIN
-    week_num := EXTRACT(WEEK FROM NEW."createdAt");
+    day_num := EXTRACT(DAY FROM NEW."createdAt");
     month_num := EXTRACT(MONTH FROM NEW."createdAt");
     year_num := EXTRACT(YEAR FROM NEW."createdAt");
-    week_start := DATE_TRUNC('week', NEW."createdAt");
-    week_end := week_start + INTERVAL '6 days';
-    week_key := CONCAT(week_num, '/', month_num, '/', year_num);
+    -- week_start := DATE_TRUNC('week', NEW."createdAt");
+    -- week_end := week_start + INTERVAL '6 days';
+    date_key := CONCAT(day_num, '/', month_num, '/', year_num);
     UPDATE "topics"
-    SET "timedStats" = jsonb_set("timedStats", ARRAY[NEW.vote, week_key], to_jsonb(COALESCE((("timedStats" -> NEW.vote ->> week_key::text)::int + 1), 1::int )), true)
+    SET "timedStats" = jsonb_set("timedStats", ARRAY[NEW.vote, date_key], to_jsonb(COALESCE((("timedStats" -> NEW.vote ->> date_key::text)::int + 1), 1::int )), true)
     WHERE "id" = NEW."topicId";
     RETURN NEW;
     END;
@@ -84,21 +85,21 @@ export async function POST() {
   await prisma.$executeRaw`;
       CREATE OR REPLACE FUNCTION change_timed_stats() RETURNS TRIGGER AS $$
       DECLARE
-      week_num INTEGER;
+      day_num INTEGER;
       month_num INTEGER;
       year_num INTEGER;
-      week_start DATE;
-      week_end DATE;
-      week_key TEXT;
+      -- week_start DATE;
+      -- week_end DATE;
+      date_key TEXT;
       BEGIN
-      week_num := EXTRACT(WEEK FROM NEW."createdAt");
+      day_num := EXTRACT(DAY FROM NEW."createdAt");
       month_num := EXTRACT(MONTH FROM NEW."createdAt");
       year_num := EXTRACT(YEAR FROM NEW."createdAt");
-      week_start := DATE_TRUNC('week', NEW."createdAt");
-      week_end := week_start + INTERVAL '6 days';
-      week_key := CONCAT(week_num, '/', month_num, '/', year_num);
+      -- week_start := DATE_TRUNC('week', NEW."createdAt");
+      -- week_end := week_start + INTERVAL '6 days';
+      date_key := CONCAT(day_num, '/', month_num, '/', year_num);
       UPDATE "topics"
-      SET "timedStats" = jsonb_set(jsonb_set("timedStats", ARRAY[ NEW.vote::text,week_key], to_jsonb(COALESCE((("timedStats" -> NEW.vote ->> week_key::text)::int + 1), 1::int )), true), ARRAY[ OLD.vote::text,week_key], to_jsonb((("timedStats" -> OLD.vote ->> week_key::text)::int - 1)::int), true)
+      SET "timedStats" = jsonb_set(jsonb_set("timedStats", ARRAY[ NEW.vote::text,date_key], to_jsonb(COALESCE((("timedStats" -> NEW.vote ->> date_key::text)::int + 1), 1::int )), true), ARRAY[ OLD.vote::text,date_key], to_jsonb((("timedStats" -> OLD.vote ->> date_key::text)::int - 1)::int), true)
         WHERE "id" = NEW."topicId";
       RETURN NEW;
       END;
@@ -133,7 +134,7 @@ export async function POST() {
     EXECUTE FUNCTION change_verified_stats();
     `;
   // =====================================================================================
-  return new Response("OK");
+  return successResponse();
 }
 
 export async function DELETE() {
@@ -172,5 +173,5 @@ export async function DELETE() {
   await prisma.$executeRaw`
     DROP FUNCTION change_verified_stats;
     `;
-  return new Response("OK");
+  return successResponse();
 }

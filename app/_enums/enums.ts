@@ -4,7 +4,10 @@ export enum errors {
   not_admin,
   already_voted,
   already_changed_vote,
+  did_not_vote_yet,
+  topic_language_exists,
   language_exists,
+  incorrect_password, // when updating password
 }
 
 export enum userFilterFlags {

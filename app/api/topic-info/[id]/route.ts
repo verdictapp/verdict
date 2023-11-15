@@ -2,6 +2,7 @@ import {
   deleteTopicInfo,
   updateTopicInfo,
 } from "@/app/_controllers/topicsController";
+import { successResponse } from "@/app/_lib/responseGenerator";
 import { NextRequest } from "next/server";
 
 // updates a topic info
@@ -13,11 +14,11 @@ export async function PUT(request: NextRequest, { params }) {
     body.description,
     body.options
   );
-  return new Response("OK");
+  return successResponse();
 }
 
 // deletes a topic info
 export async function DELETE(request: NextRequest, { params }) {
   await deleteTopicInfo(Number(params.id));
-  return new Response("OK");
+  return successResponse();
 }

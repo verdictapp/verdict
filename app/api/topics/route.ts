@@ -1,5 +1,6 @@
 import { NextRequest } from "next/server";
 import { showTopics, storeTopic } from "@/app/_controllers/topicsController";
+import { successResponse } from "@/app/_lib/responseGenerator";
 
 // get all topics
 export async function GET(request: NextRequest) {
@@ -9,7 +10,7 @@ export async function GET(request: NextRequest) {
     request.nextUrl.searchParams.get("search") || "",
     request.nextUrl.searchParams.get("code")
   );
-  return new Response(JSON.stringify(result));
+  return successResponse(result.returned);
 }
 
 // create a topic with an array of topics info
@@ -27,5 +28,5 @@ export async function POST(request: NextRequest) {
     body.image,
     body.state
   );
-  return new Response("OK");
+  return successResponse();
 }

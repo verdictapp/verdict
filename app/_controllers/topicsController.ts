@@ -1,5 +1,6 @@
 import prisma from "@/app/_lib/prisma";
 import { errors } from "../_enums/enums";
+import { errorReturn, successReturn } from "../_lib/controllerReturnGenerator";
 
 /**
  * structures an object for the tag condition on the topics table
@@ -91,7 +92,7 @@ export async function showTopics(
       },
     },
   });
-  return result;
+  return successReturn(result);
 }
 
 /**
@@ -110,7 +111,7 @@ export async function showTopicTimedStats(id: number) {
       timedStats: true,
     },
   });
-  return result;
+  return successReturn(result);
 }
 
 /**
@@ -159,6 +160,7 @@ export async function storeTopic(
       },
     },
   });
+  return successReturn();
 }
 
 /**
@@ -167,6 +169,7 @@ export async function storeTopic(
  */
 export async function destroyTopic(id: number) {
   await prisma.topics.delete({ where: { id: id } });
+  return successReturn();
 }
 
 /**
@@ -197,7 +200,7 @@ export async function updateTopic(id: number, image: any, state: 0 | 1) {
     },
     data: getUpdateDataObject(image, state),
   });
-  return new Response("OK");
+  return successReturn();
 }
 
 /**
@@ -238,7 +241,7 @@ export async function updateTopicInfo(
     },
     data: getTopicInfoUpdatableFields(title, description, options),
   });
-  return new Response("OK");
+  return successReturn();
 }
 
 /**
@@ -259,8 +262,8 @@ export async function createTopicInfo(
       languageId: languageId,
     },
   });
-  if (result) return errors.language_exists;
-  await prisma.topicInfo.createMany({
+  if (result) return errorReturn(errors.topic_language_exists);
+  await prisma.topicInfo.create({
     data: {
       topicId: topicId,
       languageId: languageId,
@@ -269,6 +272,7 @@ export async function createTopicInfo(
       options: options,
     },
   });
+  return successReturn();
 }
 
 export async function deleteTopicInfo(topicId: number) {
@@ -277,4 +281,5 @@ export async function deleteTopicInfo(topicId: number) {
       id: topicId,
     },
   });
+  return successReturn();
 }

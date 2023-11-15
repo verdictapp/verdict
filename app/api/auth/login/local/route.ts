@@ -1,13 +1,12 @@
 import { authenticateUserLocally } from "@/app/_controllers/usersController";
-import { errors } from "@/app/_enums/enums";
+import { errorResponse, successResponse } from "@/app/_lib/responseGenerator";
 import { NextRequest } from "next/server";
 
 export async function POST(request: NextRequest) {
   let body = await request.json();
   let result = await authenticateUserLocally(body.username, body.password);
-  if (result === errors.wrong_credentials) {
-    return new Response("wrong credentials", { status: 401 });
-  } else {
-    return new Response(JSON.stringify(result));
+  if (result.errorCode) {
+    return errorResponse(result.errorCode);
   }
+  return successResponse(result.returned);
 }

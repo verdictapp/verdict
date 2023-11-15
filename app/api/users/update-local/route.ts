@@ -1,6 +1,7 @@
 import { updateUserLocalInformation } from "@/app/_controllers/usersController";
 import { errors } from "@/app/_enums/enums";
 import { isSamePass } from "@/app/_lib/hashing";
+import { errorResponse, successResponse } from "@/app/_lib/responseGenerator";
 import { NextRequest } from "next/server";
 
 export async function PUT(request: NextRequest) {
@@ -12,10 +13,10 @@ export async function PUT(request: NextRequest) {
       body.newUsername,
       body.newPass
     );
-    if (result === errors.username_taken) {
-      return new Response("username taken");
+    if (result.errorCode) {
+      return errorResponse(result.errorCode);
     }
-    return new Response("OK");
+    return successResponse();
   }
-  return new Response("incorrect password");
+  return errorResponse(errors.incorrect_password);
 }
