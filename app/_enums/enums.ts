@@ -4,6 +4,7 @@ export enum errors {
   not_admin,
   already_voted,
   already_changed_vote,
+  language_exists,
 }
 
 export enum userFilterFlags {

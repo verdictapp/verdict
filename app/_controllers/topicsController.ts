@@ -1,4 +1,5 @@
 import prisma from "@/app/_lib/prisma";
+import { errors } from "../_enums/enums";
 
 /**
  * structures an object for the tag condition on the topics table
@@ -133,7 +134,9 @@ export async function storeTopic(
   state = 1
 ) {
   let stats = {};
+  let timedStats = {};
   Object.keys(data[0].options).map((key) => {
+    timedStats[key] = {};
     stats[key] = { verified: 0, unverified: 0 };
   });
   await prisma.topics.create({
@@ -141,7 +144,7 @@ export async function storeTopic(
       image: image,
       state: state || 1,
       stats: stats,
-      timedStats: {},
+      timedStats: timedStats,
       topicInfo: {
         createMany: {
           data: data.map((topicInfo) => {
@@ -239,20 +242,39 @@ export async function updateTopicInfo(
 }
 
 /**
- *
+ * create a topic info in as specific language
  * @param topicId
  * @param data
  */
-export async function createTopicInfo(topicId: number, data) {
+export async function createTopicInfo(
+  topicId: number,
+  languageId,
+  title,
+  description,
+  options
+) {
+  let result = await prisma.topicInfo.findFirst({
+    where: {
+      topicId: topicId,
+      languageId: languageId,
+    },
+  });
+  if (result) return errors.language_exists;
   await prisma.topicInfo.createMany({
-    data: data.map((topicInfo) => {
-      return {
-        topicId: topicId,
-        languageId: topicInfo.languageId,
-        title: topicInfo.title,
-        description: topicInfo.description,
-        options: topicInfo.options,
-      };
-    }),
+    data: {
+      topicId: topicId,
+      languageId: languageId,
+      title: title,
+      description: description,
+      options: options,
+    },
+  });
+}
+
+export async function deleteTopicInfo(topicId: number) {
+  await prisma.topicInfo.delete({
+    where: {
+      id: topicId,
+    },
   });
 }

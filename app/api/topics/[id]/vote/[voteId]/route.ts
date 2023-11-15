@@ -2,6 +2,7 @@ import { createVote, updateVote } from "@/app/_controllers/voteController";
 import { errors } from "@/app/_enums/enums";
 import { NextRequest } from "next/server";
 
+// change vote
 export async function PUT(request: NextRequest, { params }) {
   let body = await request.json();
   let result = await updateVote(Number(params.voteId), body.vote);

@@ -2,6 +2,12 @@ import { createVote } from "@/app/_controllers/voteController";
 import { errors } from "@/app/_enums/enums";
 import { NextRequest } from "next/server";
 
+export async function GET(){
+  let result = await prisma.votes.findMany();
+  return new Response(JSON.stringify(result))
+}
+
+// create a vote
 export async function POST(request: NextRequest, { params }) {
   let body = await request.json();
   let result = await createVote(
