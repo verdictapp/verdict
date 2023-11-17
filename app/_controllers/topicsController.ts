@@ -1,6 +1,5 @@
 import prisma from "@/app/_lib/prisma";
-import { errors } from "../_enums/enums";
-import { errorReturn, successReturn } from "../_lib/controllerReturnGenerator";
+import { successReturn } from "../_lib/controllerReturnGenerator";
 
 /**
  * structures an object for the tag condition on the topics table
@@ -63,7 +62,7 @@ function getSearchConditions(search: any) {
  * @param tag a string representing the tag
  * @param search a string representing the search keyword
  * @param code language code (two letter representation of the language)
- * @returns a promise resolved as the topics that matches the criteria
+ * @returns the topics that matches the criteria
  */
 export async function showTopics(
   state = undefined,
@@ -98,7 +97,7 @@ export async function showTopics(
 /**
  * fetch the stats and the timed stats of a topic
  * @param id the topic Id
- * @returns a promise resolved as the timed stats of the topic
+ * @returns the stats and timed stats of the topic
  */
 export async function showTopicTimedStats(id: number) {
   let result = await prisma.topics.findUnique({
@@ -116,10 +115,8 @@ export async function showTopicTimedStats(id: number) {
 
 /**
  * store a topic in the database
- * @param title
- * @param description
+ * @param data array of language-specific topic info
  * @param image
- * @param options
  * @param state defaults to 1 (enabled)
  */
 export async function storeTopic(
@@ -166,8 +163,9 @@ export async function storeTopic(
 /**
  * deletes a topic from the database
  * @param id the id of the topic to be deleted
+ * @returns success always
  */
-export async function destroyTopic(id: number) {
+export async function deleteTopic(id: number) {
   await prisma.topics.delete({ where: { id: id } });
   return successReturn();
 }
@@ -192,6 +190,7 @@ function getUpdateDataObject(image: any, state: 0 | 1) {
  * @param description
  * @param image
  * @param state
+ * @returns success always
  */
 export async function updateTopic(id: number, image: any, state: 0 | 1) {
   await prisma.topics.update({
@@ -199,87 +198,6 @@ export async function updateTopic(id: number, image: any, state: 0 | 1) {
       id: id,
     },
     data: getUpdateDataObject(image, state),
-  });
-  return successReturn();
-}
-
-/**
- * extracts the provided fields to be updated
- * @param image
- * @param state
- * @returns an object with only the defined values of the input
- */
-function getTopicInfoUpdatableFields(
-  title: any,
-  description: any,
-  options: any
-) {
-  return {
-    ...(title && { title: title }),
-    ...(description && { description: description }),
-    ...(options && { options: options }),
-  };
-}
-
-/**
- * update language specific info of a topic
- * @param topicInfoId
- * @param title
- * @param description
- * @param options
- * @returns
- */
-export async function updateTopicInfo(
-  topicInfoId: number,
-  title: any,
-  description: any,
-  options: any
-) {
-  await prisma.topicInfo.update({
-    where: {
-      id: topicInfoId,
-    },
-    data: getTopicInfoUpdatableFields(title, description, options),
-  });
-  return successReturn();
-}
-
-/**
- * create a topic info in as specific language
- * @param topicId
- * @param data
- */
-export async function createTopicInfo(
-  topicId: number,
-  languageId,
-  title,
-  description,
-  options
-) {
-  let result = await prisma.topicInfo.findFirst({
-    where: {
-      topicId: topicId,
-      languageId: languageId,
-    },
-  });
-  if (result) return errorReturn(errors.topic_language_exists);
-  await prisma.topicInfo.create({
-    data: {
-      topicId: topicId,
-      languageId: languageId,
-      title: title,
-      description: description,
-      options: options,
-    },
-  });
-  return successReturn();
-}
-
-export async function deleteTopicInfo(topicId: number) {
-  await prisma.topicInfo.delete({
-    where: {
-      id: topicId,
-    },
   });
   return successReturn();
 }

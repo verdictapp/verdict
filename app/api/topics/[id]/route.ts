@@ -1,5 +1,5 @@
 import {
-  destroyTopic,
+  deleteTopic,
   showTopicTimedStats,
   updateTopic,
 } from "@/app/_controllers/topicsController";
@@ -14,7 +14,7 @@ export async function GET(request: NextRequest, { params }) {
 
 // deletes a topic
 export async function DELETE(request: NextRequest, { params }) {
-  await destroyTopic(Number(params.id));
+  await deleteTopic(Number(params.id));
   return successResponse();
 }
 

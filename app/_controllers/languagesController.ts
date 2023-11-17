@@ -2,11 +2,21 @@ import prisma from "@/app/_lib/prisma";
 import { errorReturn, successReturn } from "../_lib/controllerReturnGenerator";
 import { errors } from "../_enums/enums";
 
+/**
+ * get all languages
+ * @returns languages array
+ */
 export async function getLanguages() {
   let languages = await prisma.languages.findMany();
   return successReturn(languages);
 }
 
+/**
+ * create a unique new language
+ * @param language language name
+ * @param code language two letter representation
+ * @returns language_exists error, or success
+ */
 export async function storeLanguage(language: string, code: string) {
   let result = await prisma.languages.findFirst({
     where: {
@@ -22,6 +32,14 @@ export async function storeLanguage(language: string, code: string) {
   });
   return successReturn();
 }
+
+/**
+ * update an existing language with unique language and code
+ * @param id language id
+ * @param language new language name
+ * @param code new language code
+ * @returns language_exists error, or success
+ */
 export async function updateLanguage(
   id: number,
   language: string,

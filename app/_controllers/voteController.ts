@@ -3,11 +3,11 @@ import prisma from "@/app/_lib/prisma";
 import { errorReturn, successReturn } from "../_lib/controllerReturnGenerator";
 
 /**
- *
+ * vote on a specific topic
  * @param topicId
  * @param userId
  * @param vote
- * @returns
+ * @returns already voted error if the user already voted, success otherwise
  */
 export async function createVote(
   topicId: number,
@@ -34,10 +34,10 @@ export async function createVote(
 }
 
 /**
- *
+ * change user vote
  * @param voteId
  * @param vote
- * @returns
+ * @returns did not vote yet error if the vote was not found, already voted error if the new vote is the same as the old one, and already changed vote error (self explanatory), otherwise success
  */
 export async function updateVote(voteId: number, vote: string) {
   let result = await prisma.votes.findUnique({

@@ -1,4 +1,4 @@
-import { createTopicInfo } from "@/app/_controllers/topicsController";
+import { createTopicInfo } from "@/app/_controllers/topicInfoController";
 import { successResponse } from "@/app/_lib/responseGenerator";
 import { NextRequest } from "next/server";
 

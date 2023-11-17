@@ -1,7 +1,7 @@
 import {
   deleteTopicInfo,
   updateTopicInfo,
-} from "@/app/_controllers/topicsController";
+} from "@/app/_controllers/topicInfoController";
 import { successResponse } from "@/app/_lib/responseGenerator";
 import { NextRequest } from "next/server";
 
