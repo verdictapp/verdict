@@ -87,7 +87,7 @@ export async function authenticateUserLocally(
  * @returns user object if the input is valid or username_taken enum value
  */
 export async function createUnverifiedUser(username: string, password: string) {
-  if (usernameAvailable(username)) {
+  if (!(await usernameAvailable(username)).returned) {
     return errorReturn(errors.username_taken);
   }
   return successReturn(
@@ -109,7 +109,7 @@ export async function createUnverifiedUser(username: string, password: string) {
  * @returns
  */
 export async function createVerifiedUser(username: string, password: string) {
-  if (usernameAvailable(username)) {
+  if (!(await usernameAvailable(username)).returned) {
     return errorReturn(errors.username_taken);
   }
   return successReturn(
@@ -130,7 +130,7 @@ export async function createVerifiedUser(username: string, password: string) {
  * @returns the created user(admin) or username_taken enum value
  */
 export async function createAdmin(username: string, password: string) {
-  if (usernameAvailable(username)) {
+  if (!(await usernameAvailable(username)).returned) {
     return errorReturn(errors.username_taken);
   }
   return successReturn(
@@ -156,7 +156,7 @@ export async function updateUserLocalInformation(
   newUsername: string,
   newPass: string
 ) {
-  if (usernameAvailable(newUsername)) {
+  if (!(await usernameAvailable(newUsername)).returned) {
     return errorReturn(errors.username_taken);
   }
   await prisma.users.update({
