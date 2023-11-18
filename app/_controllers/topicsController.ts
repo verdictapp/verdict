@@ -80,6 +80,7 @@ export async function showTopics(
       id: true,
       image: true,
       createdAt: true,
+      priority: true,
       state: true,
       stats: true,
       topicInfo: {
@@ -89,6 +90,15 @@ export async function showTopics(
           },
         },
       },
+      tagged: {
+        select: {
+          id: true,
+          tag: true,
+        },
+      },
+    },
+    orderBy: {
+      priority: "desc",
     },
   });
   return successReturn(result);
@@ -128,6 +138,7 @@ export async function storeTopic(
       options: "options with English values",
     },
   ],
+  priority: number = 0,
   image: any,
   state = 1
 ) {
@@ -143,6 +154,7 @@ export async function storeTopic(
       state: state || 1,
       stats: stats,
       timedStats: timedStats,
+      priority: priority,
       topicInfo: {
         createMany: {
           data: data.map((topicInfo) => {

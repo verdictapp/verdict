@@ -30,6 +30,7 @@ model topics {
   stats      Json
   timedStats Json
   state      Int
+  priority   Int?
   createdAt  DateTime    @default(now())
   votes      votes[]
   topicInfo  topicInfo[]
@@ -55,9 +56,10 @@ model topicInfo {
 }
 
 model tags {
-  id     Int      @id @default(autoincrement())
-  name   String
-  tagged tagged[]
+  id       Int      @id @default(autoincrement())
+  name     String
+  priority Int?
+  tagged   tagged[]
 }
 
 model votes {
