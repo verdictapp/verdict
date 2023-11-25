@@ -6,21 +6,39 @@ const DEBUG = false;
 export async function middleware(request: NextRequest) {
   if (DEBUG) return NextResponse.next();
   if (request.nextUrl.pathname.startsWith("/api")) {
-    // exclude auth folder
-    if (request.nextUrl.pathname.startsWith("/api/auth"))
+    // public access for auth and public paths
+    if (
+      request.nextUrl.pathname.startsWith("/api/auth") ||
+      request.nextUrl.pathname.startsWith("/api/public")
+    )
       return NextResponse.next();
 
-    // passing the user to the endpoint
-    const headers = new Headers(request.headers);
-    const setUser = (user) => {
-      headers.set("user", JSON.stringify(user));
-    };
-    if (
-      await verifyToken(
-        request.headers.get("authorization")?.split(" ")[1] || undefined,
-        setUser
-      )
-    ) {
+    // verify token
+    let result = await verifyToken(
+      request.headers.get("authorization")?.split(" ")[1] || undefined
+    );
+
+    if (result.success) {
+      // protecting admin path
+      if (
+        !result.returned.admin &&
+        request.nextUrl.pathname.startsWith("/api/admin")
+      ) {
+        return NextResponse.json({ message: "unauthorized" }, { status: 403 });
+      }
+
+      // passing the user
+      const headers = new Headers(request.headers);
+      headers.set(
+        "user",
+        JSON.stringify({
+          id: result.returned.id,
+          password: result.returned.password,
+          admin: result.returned.admin,
+          membership: result.returned.membership,
+          verified: result.returned.verified,
+        })
+      );
       return NextResponse.next({ headers: headers });
     } else {
       return NextResponse.json({ message: "unauthenticated" }, { status: 401 });

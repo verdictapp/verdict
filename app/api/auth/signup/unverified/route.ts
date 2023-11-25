@@ -9,7 +9,5 @@ export async function POST(request: NextRequest) {
   if (!result.success) {
     return errorResponse(result.errorCode);
   }
-  return successResponse({
-    token: await createToken(result.returned),
-  });
+  return successResponse(result.returned);
 }

@@ -5,7 +5,7 @@ import { NextRequest } from "next/server";
 // change vote
 export async function PUT(request: NextRequest, { params }) {
   let body = await request.json();
-  let result = await updateVote(Number(params.voteId), body.vote);
+  let result = await updateVote(Number(params.id), body.vote);
   if (result.errorCode) {
     return errorResponse(result.errorCode);
   }

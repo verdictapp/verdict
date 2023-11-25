@@ -12,16 +12,20 @@ datasource db {
 }
 
 model users {
-  id         Int      @id @default(autoincrement())
-  username   String?  @unique
-  email      String?  @unique
-  phone      String?  @unique
-  password   String?
-  verified   Boolean  @default(false)
-  membership Boolean  @default(false)
-  admin      Boolean  @default(false)
-  createdAt  DateTime @default(now())
-  votes      votes[]
+  id          Int       @id @default(autoincrement())
+  username    String?   @unique
+  email       String?   @unique
+  phone       String?   @unique
+  password    String?
+  verified    Boolean   @default(false)
+  membership  Boolean   @default(false)
+  admin       Boolean   @default(false)
+  // optional data collection ;) ;)
+  gender      Boolean?
+  location    String?
+  dateOfBirth DateTime?
+  createdAt   DateTime  @default(now())
+  votes       votes[]
 }
 
 model topics {

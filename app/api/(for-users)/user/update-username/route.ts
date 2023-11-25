@@ -1,11 +1,11 @@
-import { createAdmin } from "@/app/_controllers/usersController";
+import { updateUsername } from "@/app/_controllers/usersController";
 import { errorResponse, successResponse } from "@/app/_lib/responseGenerator";
-import { createToken } from "@/app/_lib/tokenHandler";
 import { NextRequest } from "next/server";
 
-export async function POST(request: NextRequest) {
+export async function PUT(request: NextRequest) {
+  let user = JSON.parse(request.headers.get("user"));
   let body = await request.json();
-  let result = await createAdmin(body.username, body.password);
+  let result = await updateUsername(user.id, body.username);
   if (!result.success) {
     return errorResponse(result.errorCode);
   }

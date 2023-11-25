@@ -1,4 +1,6 @@
 import * as jose from "jose";
+import { errorReturn, successReturn } from "./controllerReturnGenerator";
+import { errors } from "../_enums/enums";
 
 /**
  * checks if the token the user provided is still valid
@@ -6,8 +8,8 @@ import * as jose from "jose";
  * @param callback a function called with the payload if token valid
  * @returns wether the token is valid or not
  */
-export async function verifyToken(token: string, callback = (f) => f) {
-  if (!token) return false;
+export async function verifyToken(token: string) {
+  if (!token) return errorReturn(errors.token_error);
   let isAuth = true;
 
   try {
@@ -15,11 +17,10 @@ export async function verifyToken(token: string, callback = (f) => f) {
       token,
       new TextEncoder().encode(process.env.JWT_SECRET_TOKEN as string)
     );
-    callback(payload);
+    return successReturn(payload);
   } catch (error) {
-    isAuth = false;
+    return errorReturn(errors.token_error);
   }
-  return isAuth;
 }
 
 /**

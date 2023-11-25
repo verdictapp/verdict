@@ -8,6 +8,7 @@ export enum errors {
   topic_language_exists,
   language_exists,
   incorrect_password, // when updating password
+  token_error,
 }
 
 export enum userFilterFlags {

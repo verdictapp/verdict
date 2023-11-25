@@ -1,6 +1,7 @@
 import bcrypt from "bcrypt";
 
 export async function hashPass(password: string) {
+  if (!password) return undefined;
   return await bcrypt.hash(password, 10);
 }
 

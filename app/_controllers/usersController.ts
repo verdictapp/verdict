@@ -90,14 +90,16 @@ export async function createUnverifiedUser(username: string, password: string) {
   if (!(await usernameAvailable(username)).returned) {
     return errorReturn(errors.username_taken);
   }
-  return successReturn(
-    await prisma.users.create({
-      data: {
-        username: username,
-        password: await hashPass(password),
-      },
-    })
-  );
+  return successReturn({
+    token: await createToken(
+      await prisma.users.create({
+        data: {
+          username: username,
+          password: await hashPass(password),
+        },
+      })
+    ),
+  });
 }
 
 /**
@@ -112,15 +114,17 @@ export async function createVerifiedUser(username: string, password: string) {
   if (!(await usernameAvailable(username)).returned) {
     return errorReturn(errors.username_taken);
   }
-  return successReturn(
-    await prisma.users.create({
-      data: {
-        username: username,
-        password: await hashPass(password),
-        verified: true,
-      },
-    })
-  );
+  return successReturn({
+    token: await createToken(
+      await prisma.users.create({
+        data: {
+          username: username,
+          password: await hashPass(password),
+          verified: true,
+        },
+      })
+    ),
+  });
 }
 
 /**
@@ -133,44 +137,85 @@ export async function createAdmin(username: string, password: string) {
   if (!(await usernameAvailable(username)).returned) {
     return errorReturn(errors.username_taken);
   }
-  return successReturn(
-    await prisma.users.create({
-      data: {
-        username: username,
-        password: await hashPass(password),
-        verified: true,
-        admin: true,
-      },
-    })
-  );
+  return successReturn({
+    token: await createToken(
+      await prisma.users.create({
+        data: {
+          username: username,
+          password: await hashPass(password),
+          verified: true,
+          admin: true,
+        },
+      })
+    ),
+  });
 }
 
 /**
  * updates user's username and password
  * @param id user's id
  * @param newUsername new username
- * @param newPass new password
  */
-export async function updateUserLocalInformation(
-  id: number,
-  newUsername: string,
-  newPass: string
-) {
+export async function updateUsername(id: number, newUsername: string) {
   if (!(await usernameAvailable(newUsername)).returned) {
     return errorReturn(errors.username_taken);
   }
+
+  return successReturn({
+    token: await createToken(
+      await prisma.users.update({
+        where: {
+          id: id,
+        },
+        data: {
+          username: newUsername,
+        },
+      })
+    ),
+  });
+}
+/**
+ * updates user's password
+ * make sure the user provide the old password and confirm the match before calling this function
+ * @param id user's id
+ * @param newPass new password
+ */
+export async function updatePassword(id: number, newPassword?: string) {
+  return successReturn({
+    token: await createToken(
+      await prisma.users.update({
+        where: {
+          id: id,
+        },
+        data: {
+          password: await hashPass(newPassword),
+        },
+      })
+    ),
+  });
+}
+/**
+ * update user related information
+ * @param id
+ * @param information object containing user information
+ * @returns success
+ */
+export async function updateInformation(
+  id: number,
+  information: { gender?: boolean; location?: string; dateOfBirth?: Date }
+) {
   await prisma.users.update({
     where: {
       id: id,
     },
     data: {
-      username: newUsername,
-      password: await hashPass(newPass),
+      gender: information.gender,
+      location: information.location,
+      dateOfBirth: information.dateOfBirth,
     },
   });
   return successReturn();
 }
-
 /**
  * check if the username is available
  * @param username

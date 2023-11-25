@@ -43,7 +43,7 @@ function getStateConditions(state: any) {
  * @returns a condition object for the search on the topics table
  */
 function getSearchConditions(search: any) {
-  return search === ""
+  return search !== null
     ? {
         topicInfo: {
           some: {
@@ -64,16 +64,11 @@ function getSearchConditions(search: any) {
  * @param code language code (two letter representation of the language)
  * @returns the topics that matches the criteria
  */
-export async function showTopics(
-  state = undefined,
-  tag = undefined,
-  search = "",
-  code = "en"
-) {
+export async function showTopics(state?, tag?, search?, code?: string) {
   let result = await prisma.topics.findMany({
     where: {
-      ...getTagConditions(tag),
       ...getStateConditions(state),
+      ...getTagConditions(tag),
       ...getSearchConditions(search),
     },
     select: {
@@ -86,7 +81,7 @@ export async function showTopics(
       topicInfo: {
         where: {
           languages: {
-            OR: [{ code: "en" }, { code: code.toLowerCase() }],
+            OR: [{ code: "en" }, { code: code && code.toLowerCase() }],
           },
         },
       },
@@ -151,7 +146,7 @@ export async function storeTopic(
   await prisma.topics.create({
     data: {
       image: image,
-      state: state || 1,
+      state: state,
       stats: stats,
       timedStats: timedStats,
       priority: priority,
@@ -183,33 +178,55 @@ export async function deleteTopic(id: number) {
 }
 
 /**
- * extracts the provided fields to be updated
- * @param image
- * @param state
- * @returns an object with only the defined values of the input
- */
-function getUpdateDataObject(image: any, state: 0 | 1) {
-  return {
-    ...(image && { image: image }),
-    ...(state && { state: state }),
-  };
-}
-
-/**
- * update a topic by it's id, only the defined inputs will be updated
+ * update a topic's image by it's id
  * @param id
- * @param title
- * @param description
  * @param image
- * @param state
  * @returns success always
  */
-export async function updateTopic(id: number, image: any, state: 0 | 1) {
+export async function updateTopicImage(id: number, image: any) {
   await prisma.topics.update({
     where: {
       id: id,
     },
-    data: getUpdateDataObject(image, state),
+    data: {
+      image: image,
+    },
+  });
+  return successReturn();
+}
+
+/**
+ * update a topic's priority by it's id
+ * @param id
+ * @param priority
+ * @returns success always
+ */
+export async function updateTopicPriority(id: number, priority: number) {
+  await prisma.topics.update({
+    where: {
+      id: id,
+    },
+    data: {
+      priority: priority,
+    },
+  });
+  return successReturn();
+}
+
+/**
+ * update a topic's state by it's id
+ * @param id
+ * @param state
+ * @returns success always
+ */
+export async function updateTopicState(id: number, state?: 0 | 1) {
+  await prisma.topics.update({
+    where: {
+      id: id,
+    },
+    data: {
+      state: state,
+    },
   });
   return successReturn();
 }

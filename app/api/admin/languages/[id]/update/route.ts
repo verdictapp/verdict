@@ -10,7 +10,7 @@ export async function PUT(request: NextRequest, { params }) {
     body.code
   );
   if (!result.success) {
-    return errorResponse(result.errorCode, result.returned);
+    return errorResponse(result.errorCode);
   }
   return successResponse();
 }

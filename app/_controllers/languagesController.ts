@@ -17,7 +17,7 @@ export async function getLanguages() {
  * @param code language two letter representation
  * @returns language_exists error, or success
  */
-export async function storeLanguage(language: string, code: string) {
+export async function storeLanguage(language?: string, code?: string) {
   let result = await prisma.languages.findFirst({
     where: {
       OR: [{ language: language }, { code: code }],
@@ -47,6 +47,7 @@ export async function updateLanguage(
 ) {
   let result = await prisma.languages.findFirst({
     where: {
+      id: { not: id },
       OR: [{ language: language }, { code: code }],
     },
   });
