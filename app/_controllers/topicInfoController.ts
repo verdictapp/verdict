@@ -30,15 +30,19 @@ function getTopicInfoUpdatableFields(
  */
 export async function updateTopicInfo(
   id: number,
-  title: any,
-  description: any,
-  options: any
+  title?: any,
+  description?: any,
+  options?: any
 ) {
   await prisma.topicInfo.update({
     where: {
       id: id,
     },
-    data: getTopicInfoUpdatableFields(title, description, options),
+    data: {
+      title,
+      description,
+      options,
+    },
   });
   return successReturn();
 }

@@ -4,5 +4,5 @@ import { NextRequest } from "next/server";
 
 export async function GET(request: NextRequest) {
   let result = await getTags(request.nextUrl.searchParams.get("search"));
-  return successResponse(result);
+  return successResponse(result.returned);
 }

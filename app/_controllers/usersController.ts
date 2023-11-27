@@ -229,3 +229,12 @@ export async function usernameAvailable(username: string) {
       : true
   );
 }
+
+export async function deleteUser(id: number) {
+  await prisma.users.delete({
+    where: {
+      id: id,
+    },
+  });
+  return successReturn();
+}

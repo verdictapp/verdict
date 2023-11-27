@@ -1,8 +1,8 @@
-import { deleteUser } from "@/app/_controllers/usersController";
+import { unlinkTagTopic } from "@/app/_controllers/taggedController";
 import { successResponse } from "@/app/_lib/responseGenerator";
 import { NextRequest } from "next/server";
 
 export async function DELETE(request: NextRequest, { params }) {
-  await deleteUser(Number(params.id));
+  await unlinkTagTopic(Number(params.id));
   return successResponse();
 }

@@ -8,9 +8,9 @@ import { successReturn } from "../_lib/controllerReturnGenerator";
  */
 export async function getTags(search?: string) {
   let result = await prisma.tags.findMany({
-    where: search && {
+    where: {
       name: {
-        contains: search,
+        contains: search === null ? "" : search,
       },
     },
     orderBy: {

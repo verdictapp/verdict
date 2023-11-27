@@ -4,5 +4,5 @@ import { NextRequest } from "next/server";
 
 export async function GET(request: NextRequest, { params }) {
   let result = await availableTopics(Number(params.id));
-  return successResponse(result);
+  return successResponse(result.returned);
 }

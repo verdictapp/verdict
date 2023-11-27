@@ -78,9 +78,9 @@ model votes {
 }
 
 model tagged {
-  id       Int     @id @default(autoincrement())
-  tag      tags?   @relation(fields: [tagId], references: [id], onDelete: Cascade)
-  tagId    Int?
-  topics   topics? @relation(fields: [topicsId], references: [id], onDelete: Cascade)
-  topicsId Int?
+  id      Int     @id @default(autoincrement())
+  tag     tags?   @relation(fields: [tagId], references: [id], onDelete: Cascade)
+  tagId   Int?
+  topics  topics? @relation(fields: [topicId], references: [id], onDelete: Cascade)
+  topicId Int?
 }

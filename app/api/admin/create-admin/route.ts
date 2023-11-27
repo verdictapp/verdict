@@ -1,6 +1,5 @@
 import { createAdmin } from "@/app/_controllers/usersController";
 import { errorResponse, successResponse } from "@/app/_lib/responseGenerator";
-import { createToken } from "@/app/_lib/tokenHandler";
 import { NextRequest } from "next/server";
 
 export async function POST(request: NextRequest) {

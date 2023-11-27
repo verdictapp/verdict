@@ -64,7 +64,13 @@ function getSearchConditions(search: any) {
  * @param code language code (two letter representation of the language)
  * @returns the topics that matches the criteria
  */
-export async function showTopics(state?, tag?, search?, code?: string) {
+export async function showTopics(
+  state?,
+  tag?,
+  search?,
+  code?: string,
+  userId?: number
+) {
   let result = await prisma.topics.findMany({
     where: {
       ...getStateConditions(state),
@@ -78,6 +84,11 @@ export async function showTopics(state?, tag?, search?, code?: string) {
       priority: true,
       state: true,
       stats: true,
+      votes: userId && {
+        where: {
+          userId: userId,
+        },
+      },
       topicInfo: {
         where: {
           languages: {
@@ -105,7 +116,7 @@ export async function showTopics(state?, tag?, search?, code?: string) {
  * @returns the stats and timed stats of the topic
  */
 export async function showTopicTimedStats(id: number) {
-  let result = await prisma.topics.findUnique({
+  let result = await prisma.topics.findFirst({
     where: {
       id: id,
     },

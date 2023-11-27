@@ -74,10 +74,19 @@ export async function availableTags(topicId: number) {
     where: {
       tagged: {
         none: {
-          topicsId: topicId,
+          topicId: topicId,
         },
       },
     },
   });
   return successReturn(result);
+}
+
+export async function unlinkTagTopic(linkId: number) {
+  await prisma.tagged.delete({
+    where: {
+      id: linkId,
+    },
+  });
+  return successReturn();
 }
