@@ -1,12 +1,12 @@
 import prisma from "@/app/_lib/prisma";
 import { successReturn } from "../_lib/controllerReturnGenerator";
-
+import getPagination from "../_lib/paginationHelper";
 /**
  * get all tags
  * @param search
  * @returns success with all tags
  */
-export async function getTags(search?: string) {
+export async function getTags(search?: string, take?: any, skip?: any) {
   let result = await prisma.tags.findMany({
     where: {
       name: {
@@ -16,6 +16,7 @@ export async function getTags(search?: string) {
     orderBy: {
       priority: "desc",
     },
+    ...getPagination(take, skip),
   });
   return successReturn(result);
 }

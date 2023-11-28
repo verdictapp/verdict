@@ -1,6 +1,6 @@
 import { successReturn } from "../_lib/controllerReturnGenerator";
 import prisma from "@/app/_lib/prisma";
-
+import getPagination from "../_lib/paginationHelper";
 /**
  * add multiple tags to a topic
  * @param topicId
@@ -42,7 +42,7 @@ export async function addTopicsToTag(tagId: number, topics: any[] = []) {
  * @param tagId
  * @returns success, with the available topics
  */
-export async function availableTopics(tagId: number) {
+export async function availableTopics(tagId: number, take?: any, skip?: any) {
   let result = await prisma.topics.findMany({
     select: {
       id: true,
@@ -60,6 +60,7 @@ export async function availableTopics(tagId: number) {
         },
       },
     },
+    ...getPagination(take, skip),
   });
   return successReturn(result);
 }
@@ -69,7 +70,7 @@ export async function availableTopics(tagId: number) {
  * @param topicId
  * @returns success, with all the available tags
  */
-export async function availableTags(topicId: number) {
+export async function availableTags(topicId: number, take?: any, skip?: any) {
   let result = await prisma.tags.findMany({
     where: {
       tagged: {
@@ -78,6 +79,7 @@ export async function availableTags(topicId: number) {
         },
       },
     },
+    ...getPagination(take, skip),
   });
   return successReturn(result);
 }

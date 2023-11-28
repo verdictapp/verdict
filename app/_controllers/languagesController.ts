@@ -1,13 +1,15 @@
 import prisma from "@/app/_lib/prisma";
 import { errorReturn, successReturn } from "../_lib/controllerReturnGenerator";
 import { errors } from "../_enums/enums";
-
+import getPagination from "../_lib/paginationHelper";
 /**
  * get all languages
  * @returns languages array
  */
-export async function getLanguages() {
-  let languages = await prisma.languages.findMany();
+export async function getLanguages(take?: any, skip?: any) {
+  let languages = await prisma.languages.findMany({
+    ...getPagination(take, skip),
+  });
   return successReturn(languages);
 }
 

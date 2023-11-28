@@ -3,7 +3,7 @@ import { createToken } from "../_lib/tokenHandler";
 import { hashPass, isSamePass } from "../_lib/hashing";
 import prisma from "@/app/_lib/prisma";
 import { errorReturn, successReturn } from "../_lib/controllerReturnGenerator";
-
+import getPagination from "../_lib/paginationHelper";
 /**
  * create the condition object for the users search
  * @param filterFlag userFilterFlags enum value
@@ -36,9 +36,14 @@ function getFlagsCondition(filterFlag: number) {
  * @param flags userFilterFlags enum value
  * @returns all the users that matches the flags criteria
  */
-export async function getUsers(filterFlag: number = undefined) {
+export async function getUsers(
+  filterFlag: number = undefined,
+  take?: any,
+  skip?: any
+) {
   let result = await prisma.users.findMany({
     where: getFlagsCondition(filterFlag),
+    ...getPagination(take, skip),
   });
   return successReturn(result);
 }

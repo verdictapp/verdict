@@ -1,6 +1,6 @@
 import prisma from "@/app/_lib/prisma";
 import { successReturn } from "../_lib/controllerReturnGenerator";
-
+import getPagination from "../_lib/paginationHelper";
 /**
  * structures an object for the tag condition on the topics table
  * @param tag a string representing the tag
@@ -65,6 +65,8 @@ function getSearchConditions(search: any) {
  * @returns the topics that matches the criteria
  */
 export async function showTopics(
+  take?,
+  skip?,
   state?,
   tag?,
   search?,
@@ -106,6 +108,7 @@ export async function showTopics(
     orderBy: {
       priority: "desc",
     },
+    ...getPagination(take, skip),
   });
   return successReturn(result);
 }
