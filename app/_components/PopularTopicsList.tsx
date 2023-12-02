@@ -11,12 +11,12 @@ export function PopularTopicsList() {
   return (
     <ScrollArea className="h-screen rounded-md">
       <div className="p-4">
-        <h4 className="mb-4 text-sm font-medium leading-none">
+        <h4 className="mb-4 text-base font-medium leading-none">
           Popular Topics
         </h4>
         {popularTopics.map((topic) => (
           <>
-            <div key={topic} className="text-sm py-2">
+            <div key={topic} className="text-sm py-3">
               {topic}
             </div>
             {/* <Separator className="my-2" /> */}

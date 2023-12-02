@@ -11,13 +11,13 @@ export function MainTagsList() {
   return (
     <ScrollArea className="h-screen rounded-md">
       <div className="p-4">
-        <h4 className="mb-4 text-sm font-medium leading-none">Tags</h4>
+        <h4 className="mb-4 text-base font-medium leading-none">Tags</h4>
         {tags.map((tag) => (
           <>
-            <div key={tag} className="text-sm">
+            <div key={tag} className="text-sm py-3 font-semibold">
               {tag}
             </div>
-            <Separator className="my-2" />
+            {/* <Separator className="my-2" /> */}
           </>
         ))}
       </div>
