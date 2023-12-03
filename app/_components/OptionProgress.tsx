@@ -6,7 +6,7 @@ const OptionProgress = ({ id, title, percentage, isVoted }) => {
       <span className="absolute left-0 top-2 ml-3">{title}</span>
       <div
         className={`text-xs font-medium text-blue-100 text-center p-0.5 leading-none rounded-sm h-full ${
-          isVoted ? "bg-blue-500/50" : "bg-zinc-800"
+          isVoted ? "bg-[#8884d8]" : "bg-zinc-800"
         }`}
         style={{ width: percentage }}
       ></div>
