@@ -75,7 +75,7 @@ export default function Home() {
       <div className="w-0 md:w-1/6 mt-20 sticky md:px-5">
         <MainTagsList />
       </div>
-      <div className="w-full md:w-4/6 px-3 lg:px-24 xl:px-40 2xl:px-72  pt-24">
+      <div className="w-full md:w-4/6 px-3 lg:px-24 xl:px-40 2xl:px-72 pt-24">
         {topics.map((topic) => (
           <TopicCard
             id={topic.id}
