@@ -46,7 +46,7 @@ export function UpdatePersonalInfoModal({ isOpen, setIsOpen }) {
               Gender
             </Label>
             <RadioGroup
-              onChange={(value) => console.log(value)}
+              onValueChange={(value) => console.log(value)}
               className="flex space-x-3"
             >
               <div className="flex items-center space-x-2">

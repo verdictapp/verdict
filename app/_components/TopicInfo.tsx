@@ -12,11 +12,7 @@ const TopicInfo = ({
 }) => {
   return (
     <div className="bg-primary-foreground rounded-md w-full mb-7 overflow-hidden">
-      <img
-        src={photo}
-        alt={""}
-        className="w-full rounded overflow-hidden mr-3"
-      />
+      <img src={photo} alt={""} className="w-full overflow-hidden mr-3" />
       <div className="p-3">
         <div className="flex justify-between">
           <h3 className="text-lg font-medium">{title}</h3>

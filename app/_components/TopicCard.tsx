@@ -1,6 +1,7 @@
 import React from "react";
 import OptionProgress from "./OptionProgress";
 import Link from "next/link";
+import Image from "next/image";
 
 const TopicCard = ({
   id,
@@ -15,10 +16,12 @@ const TopicCard = ({
     <div className="bg-primary-foreground rounded-md w-full p-3 mb-7">
       <Link href={`/topics/${id}`}>
         <div className="flex">
-          <img
+          <Image
             src={photo}
             alt={""}
             className="w-14 rounded overflow-hidden mr-3"
+            width={56}
+            height={56}
           />
           <div>
             <h3 className="text-lg font-medium">{title}</h3>

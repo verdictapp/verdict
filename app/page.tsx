@@ -8,7 +8,6 @@ import { Button } from "@/components/ui/button";
 import { MainTagsList } from "./_components/MainTagsList";
 import { PopularTopicsList } from "./_components/PopularTopicsList";
 import TopicCard from "./_components/TopicCard";
-import { UpdateAccountInfoModal } from "./_components/modals/update-account-info-modal";
 
 export const dynamic = "force-dynamic";
 
@@ -73,10 +72,10 @@ export default function Home() {
   ];
   return (
     <div className="flex">
-      <div className="w-1/6 mt-20 sticky px-5">
+      <div className="w-0 md:w-1/6 mt-20 sticky md:px-5">
         <MainTagsList />
       </div>
-      <div className="w-4/6 lg:px-24 xl:px-72 pt-24">
+      <div className="w-full md:w-4/6 px-3 lg:px-24 xl:px-40 2xl:px-72  pt-24">
         {topics.map((topic) => (
           <TopicCard
             id={topic.id}
@@ -90,7 +89,7 @@ export default function Home() {
           />
         ))}
       </div>
-      <div className="w-1/6 mt-20 sticky px-5">
+      <div className="w-0 md:w-1/6 mt-20 sticky md:px-5">
         <PopularTopicsList />
       </div>
     </div>
