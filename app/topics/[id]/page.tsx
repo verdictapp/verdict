@@ -26,7 +26,7 @@ export default function Topic() {
     ],
   };
   return (
-    <div className="flex flex-col xl:flex-row pt-24 px-3 lg:px-24 xl:px-72 w-full xl:space-x-16">
+    <div className="flex flex-col xl:flex-row pt-24 px-3 lg:px-10 2xl:px-72 w-full xl:space-x-10 2xl:space-x-16">
       <div className="">
         <TopicInfo
           id={topic.id}
