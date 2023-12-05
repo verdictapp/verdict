@@ -1,9 +1,10 @@
 import { errors, userFilterFlags } from "../_enums/enums";
-import { createToken } from "../_lib/tokenHandler";
+import { issueToken } from "../_lib/tokenHandler";
 import { hashPass, isSamePass } from "../_lib/hashing";
 import prisma from "@/app/_lib/prisma";
 import { errorReturn, successReturn } from "../_lib/controllerReturnGenerator";
 import getPagination from "../_lib/paginationHelper";
+
 /**
  * create the condition object for the users search
  * @param filterFlag userFilterFlags enum value
@@ -78,11 +79,42 @@ export async function authenticateUserLocally(
   });
   if (user && (await isSamePass(password, user.password))) {
     return successReturn({
-      token: await createToken(user),
+      token: await issueToken(user),
     });
   } else {
     return errorReturn(errors.wrong_credentials);
   }
+}
+
+/**
+ * Login verified user
+ * @param email email of the user
+ * @param shouldSignUp wether to sign up user if not found
+ * @returns user_not_found error if shouldSignUp is false and user doesn't exist, else an access token
+ */
+export async function authenticateUserSocially(
+  email: string,
+  shouldSignUp: boolean = true
+) {
+  let user = await prisma.users.findFirst({
+    where: { email: email },
+  });
+  if (!user) {
+    if (!shouldSignUp) {
+      return errorReturn(errors.user_not_found);
+    }
+    return successReturn({
+      token: await issueToken(
+        await prisma.users.create({
+          data: {
+            email: email,
+            verified: true,
+          },
+        })
+      ),
+    });
+  }
+  return successReturn({ token: await issueToken(user) });
 }
 
 /**
@@ -96,7 +128,7 @@ export async function createUnverifiedUser(username: string, password: string) {
     return errorReturn(errors.username_taken);
   }
   return successReturn({
-    token: await createToken(
+    token: await issueToken(
       await prisma.users.create({
         data: {
           username: username,
@@ -108,23 +140,33 @@ export async function createUnverifiedUser(username: string, password: string) {
 }
 
 /**
- * TESTING PURPOSES ONLY
- *
- * creates a verified user with a username and password
- * @param username
- * @param password
- * @returns
+ * Creates/Logins user by their email
+ * @param email email of the user
+ * @param shouldLogin skip error and login the user (defaults to true)
+ * @returns user_exists error if shouldLogin is false and the user exists ELSE an access token
  */
-export async function createVerifiedUser(username: string, password: string) {
-  if (!(await usernameAvailable(username)).returned) {
-    return errorReturn(errors.username_taken);
+export async function createVerifiedUser(
+  email: string,
+  shouldLogin: boolean = true
+) {
+  let user = await prisma.users.findFirst({
+    where: {
+      email: email,
+    },
+  });
+  if (user) {
+    if (!shouldLogin) {
+      return errorReturn(errors.user_exist);
+    }
+    return successReturn({
+      token: await issueToken(user),
+    });
   }
   return successReturn({
-    token: await createToken(
+    token: await issueToken(
       await prisma.users.create({
         data: {
-          username: username,
-          password: await hashPass(password),
+          email: email,
           verified: true,
         },
       })
@@ -143,7 +185,7 @@ export async function createAdmin(username: string, password: string) {
     return errorReturn(errors.username_taken);
   }
   return successReturn({
-    token: await createToken(
+    token: await issueToken(
       await prisma.users.create({
         data: {
           username: username,
@@ -167,7 +209,7 @@ export async function updateUsername(id: number, newUsername: string) {
   }
 
   return successReturn({
-    token: await createToken(
+    token: await issueToken(
       await prisma.users.update({
         where: {
           id: id,
@@ -187,7 +229,7 @@ export async function updateUsername(id: number, newUsername: string) {
  */
 export async function updatePassword(id: number, newPassword?: string) {
   return successReturn({
-    token: await createToken(
+    token: await issueToken(
       await prisma.users.update({
         where: {
           id: id,
@@ -221,6 +263,26 @@ export async function updateInformation(
   });
   return successReturn();
 }
+
+export async function verifyUser(id: number, email: string) {
+  let user = await prisma.users.findFirst({
+    where: {
+      id: id,
+    },
+  });
+  if (user.verified) return errorReturn(errors.already_verified);
+  await prisma.users.update({
+    where: {
+      id: id,
+    },
+    data: {
+      verified: true,
+      email: email,
+    },
+  });
+  return successReturn();
+}
+
 /**
  * check if the username is available
  * @param username

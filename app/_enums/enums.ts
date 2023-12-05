@@ -9,6 +9,11 @@ export enum errors {
   language_exists,
   incorrect_password, // when updating password
   token_error,
+  already_verified,
+  user_exist,
+  user_not_found,
+  invalid_auth_provider_token,
+  auth_provider_not_implemented,
 }
 
 export enum userFilterFlags {

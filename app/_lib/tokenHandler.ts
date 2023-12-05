@@ -28,7 +28,7 @@ export async function verifyToken(token: string) {
  * @param user the payload to the sign function (user's object)
  * @returns the created token
  */
-export async function createToken(user) {
+export async function issueToken(user) {
   let token = await new jose.SignJWT(user)
     .setProtectedHeader({ alg: "HS256" })
     .setIssuedAt()
