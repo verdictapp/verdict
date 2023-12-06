@@ -5,6 +5,7 @@ import { NextRequest } from "next/server";
 export async function GET(request: NextRequest) {
   let result = await getTags(
     request.nextUrl.searchParams.get("search"),
+    request.nextUrl.searchParams.get("code") || undefined,
     request.nextUrl.searchParams.get("take"),
     request.nextUrl.searchParams.get("skip")
   );

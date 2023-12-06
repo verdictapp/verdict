@@ -6,6 +6,7 @@ export enum errors {
   already_changed_vote,
   did_not_vote_yet,
   topic_language_exists,
+  tag_language_exists,
   language_exists,
   incorrect_password, // when updating password
   token_error,

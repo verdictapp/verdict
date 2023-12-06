@@ -1,16 +1,14 @@
-import { createTopicInfo } from "@/app/_controllers/topicInfoController";
+import { createTagInfo } from "@/app/_controllers/tagInfoController";
 import { errorResponse, successResponse } from "@/app/_lib/responseGenerator";
 import { NextRequest } from "next/server";
 
-// create topic info in a specific language
+// create tag info in a specific language
 export async function POST(request: NextRequest, { params }) {
   let body = await request.json();
-  let result = await createTopicInfo(
+  let result = await createTagInfo(
     Number(params.id),
     body.languageId,
-    body.title,
-    body.description,
-    body.options
+    body.name
   );
   if (!result.success) return errorResponse(result.errorCode);
   return successResponse();
