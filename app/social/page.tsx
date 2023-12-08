@@ -1,6 +1,12 @@
 "use client";
 import React, { useState } from "react";
-import { signInWithPopup, GoogleAuthProvider } from "firebase/auth";
+import {
+  signInWithPopup,
+  GoogleAuthProvider,
+  sendSignInLinkToEmail,
+  isSignInWithEmailLink,
+  signInWithEmailLink,
+} from "firebase/auth";
 import { auth } from "../_firebase/client";
 function SignUpSocial() {
   const [token, setToken] = useState("");
@@ -85,6 +91,19 @@ function SignUpSocial() {
         console.log("====================================");
       });
   };
+
+  const handleEmailLogin = async () => {
+    await sendSignInLinkToEmail(auth, "kamilJarrougedev@gmail.com", {
+      url: "http://localhost:3000/social/signup",
+      handleCodeInApp: true,
+    });
+    // emailLink
+    // if (isSignInWithEmailLink(auth, "test")) {
+    //   await signInWithEmailLink(auth, "test", "test");
+    //   // call api endpoint to check and create user
+    // }
+  };
+
   return (
     <div className="flex flex-col h-screen w-screen">
       <div className="h-[5rem] w-full"></div>
@@ -105,6 +124,12 @@ function SignUpSocial() {
         onClick={() => handleGoogleLogin("verify")}
       >
         Verify with Google
+      </div>
+      <div
+        className="p-2 bg-white text-black w-fit rounded-sm m-2 cursor-pointer"
+        onClick={() => handleEmailLogin()}
+      >
+        Email
       </div>
     </div>
   );

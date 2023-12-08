@@ -1,7 +1,9 @@
 import { createVerifiedUser } from "@/app/_controllers/usersController";
 import { errors } from "@/app/_enums/enums";
+import { adminAuth } from "@/app/_firebase/admin";
 import { googleAuth } from "@/app/_lib/authProviders";
 import { errorResponse, successResponse } from "@/app/_lib/responseGenerator";
+
 import { NextRequest } from "next/server";
 
 export async function POST(request: NextRequest) {
@@ -24,6 +26,11 @@ export async function POST(request: NextRequest) {
       if (!result.success) return errorResponse(result.errorCode);
 
       return successResponse(result.returned);
+    }
+
+    case "email": {
+      let user = await adminAuth.getUser(body.uid);
+      user.email;
     }
     default:
       return errorResponse(errors.auth_provider_not_implemented);
