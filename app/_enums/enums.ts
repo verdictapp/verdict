@@ -13,7 +13,8 @@ export enum errors {
   already_verified,
   user_exist,
   user_not_found,
-  invalid_auth_provider_token,
+  invalid_firebase_user_uid,
+  email_not_verified,
   auth_provider_not_implemented,
 }
 
