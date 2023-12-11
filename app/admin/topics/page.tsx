@@ -1,5 +1,6 @@
 "use client";
 
+import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import {
   Table,
@@ -93,11 +94,16 @@ export default function AdminTopics() {
       <div className="w-0 md:w-1/6 mt-20 sticky md:px-5"></div>
       <div className="w-full md:w-4/6 px-2 lg:px-20 xl:px-48 pt-24">
         <div className="bg-primary-foreground px-4 py-2 rounded-md">
-          <Input
-            placeholder="Filter topics..."
-            onChange={(event) => handleFilterTopics(event.target.value)}
-            className="max-w-sm"
-          />
+          <div className="flex justify-between items-center py-3">
+            <Input
+              placeholder="Filter topics..."
+              onChange={(event) => handleFilterTopics(event.target.value)}
+              className="max-w-sm"
+            />
+            <Button onClick={() => router.push("/admin/topics/create")}>
+              Create
+            </Button>
+          </div>
           <Table>
             <TableCaption>A list of topics.</TableCaption>
             <TableHeader>

@@ -1,3 +1,4 @@
+import { Toaster } from "@/components/ui/toaster";
 import Header from "./_components/Header";
 import "./globals.css";
 import { Inter } from "next/font/google";
@@ -25,6 +26,7 @@ export default function RootLayout({
       <body className={`${inter.variable} dark relative`}>
         <Header />
         {children}
+        <Toaster />
       </body>
     </html>
   );
