@@ -6,11 +6,31 @@ import getPagination from "../_lib/paginationHelper";
  * @param search
  * @returns success with all tags
  */
-export async function getTags(search?: string, take?: any, skip?: any) {
+export async function getTags(
+  search?: string,
+  code?: string,
+  take?: any,
+  skip?: any
+) {
   let result = await prisma.tags.findMany({
     where: {
-      name: {
-        contains: search === null ? "" : search,
+      tagInfo: {
+        some: {
+          name: {
+            contains: search === null ? "" : search,
+          },
+        },
+      },
+    },
+    select: {
+      id: true,
+      priority: true,
+      tagInfo: {
+        where: {
+          languages: {
+            OR: [{ code: "en" }, { code: code }],
+          },
+        },
       },
     },
     orderBy: {
@@ -27,30 +47,45 @@ export async function getTags(search?: string, take?: any, skip?: any) {
  * @param priority tag priority, 0 lowest
  * @returns success
  */
-export async function createTag(name: string, priority: number = 0) {
+export async function createTag(
+  data = [
+    {
+      languageId: 0,
+      name: "test",
+    },
+  ],
+  priority: number = 0
+) {
   await prisma.tags.create({
     data: {
-      name: name,
       priority: priority,
+      tagInfo: {
+        createMany: {
+          data: data.map((tagInfo) => {
+            return {
+              languageId: tagInfo.languageId,
+              name: tagInfo.name,
+            };
+          }),
+        },
+      },
     },
   });
   return successReturn();
 }
 
 /**
- * update a tag
+ * update a tag's priority
  * @param id id of the tag
- * @param name name of the tag
  * @param priority tag priority, 0 lowest
  * @returns success
  */
-export async function updateTag(id: number, name?: string, priority?: number) {
+export async function updateTagPriority(id: number, priority?: number) {
   await prisma.tags.update({
     where: {
       id: id,
     },
     data: {
-      name: name,
       priority: priority,
     },
   });

@@ -3,24 +3,6 @@ import { errorReturn, successReturn } from "../_lib/controllerReturnGenerator";
 import prisma from "@/app/_lib/prisma";
 
 /**
- * extracts the provided fields to be updated
- * @param image
- * @param state
- * @returns an object with only the defined values of the input
- */
-function getTopicInfoUpdatableFields(
-  title: any,
-  description: any,
-  options: any
-) {
-  return {
-    ...(title && { title: title }),
-    ...(description && { description: description }),
-    ...(options && { options: options }),
-  };
-}
-
-/**
  * update language specific info of a topic
  * @param id topic info id
  * @param title
@@ -51,7 +33,7 @@ export async function updateTopicInfo(
  * create a topic info in as specific language
  * @param topicId
  * @param data
- * @returns success always
+ * @returns topic_language_exists error or success
  */
 export async function createTopicInfo(
   topicId: number,

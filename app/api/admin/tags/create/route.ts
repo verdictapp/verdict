@@ -4,6 +4,6 @@ import { NextRequest } from "next/server";
 
 export async function POST(request: NextRequest) {
   let body = await request.json();
-  await createTag(body.name, body.priority);
+  await createTag(body.data, body.priority);
   return successResponse();
 }

@@ -1,14 +1,18 @@
 "use client";
 import React, { useState } from "react";
-import { signInWithPopup, GoogleAuthProvider } from "firebase/auth";
+import {
+  signInWithPopup,
+  GoogleAuthProvider,
+  sendSignInLinkToEmail,
+  isSignInWithEmailLink,
+  signInWithEmailLink,
+} from "firebase/auth";
 import { auth } from "../_firebase/client";
 function SignUpSocial() {
   const [token, setToken] = useState("");
   const handleGoogleLogin = async (type: string) => {
     signInWithPopup(auth, new GoogleAuthProvider())
       .then(async (result) => {
-        const credential = GoogleAuthProvider.credentialFromResult(result);
-        const idToken = credential.idToken + "a";
         switch (type) {
           case "signUp":
             await fetch("http://localhost:3000/api/auth/signup/verified", {
@@ -18,8 +22,7 @@ function SignUpSocial() {
                 "Content-Type": "application/json",
               },
               body: JSON.stringify({
-                token: idToken,
-                provider: "google",
+                uid: result.user.uid,
               }),
             }).then(async (result) => {
               let body = await result.json();
@@ -37,8 +40,7 @@ function SignUpSocial() {
                 "Content-Type": "application/json",
               },
               body: JSON.stringify({
-                token: idToken,
-                provider: "google",
+                uid: result.user.uid,
               }),
             }).then(async (result) => {
               let body = await result.json();
@@ -57,8 +59,7 @@ function SignUpSocial() {
                 authorization: "bearer " + token,
               },
               body: JSON.stringify({
-                token: idToken,
-                provider: "google",
+                uid: result.user.uid,
               }),
             }).then(async (result) => {
               let body = await result.json();
@@ -85,6 +86,19 @@ function SignUpSocial() {
         console.log("====================================");
       });
   };
+
+  const handleEmailLogin = async () => {
+    // await sendSignInLinkToEmail(auth, "kamilJarrougedev@gmail.com", {
+    //   url: "http://localhost:3000/social/signup",
+    //   handleCodeInApp: true,
+    // });
+    // emailLink
+    // if (isSignInWithEmailLink(auth, "test")) {
+    //   await signInWithEmailLink(auth, "test", "test");
+    //   // call api endpoint to check and create user
+    // }
+  };
+
   return (
     <div className="flex flex-col h-screen w-screen">
       <div className="h-[5rem] w-full"></div>
@@ -105,6 +119,12 @@ function SignUpSocial() {
         onClick={() => handleGoogleLogin("verify")}
       >
         Verify with Google
+      </div>
+      <div
+        className="p-2 bg-white text-black w-fit rounded-sm m-2 cursor-pointer"
+        onClick={() => handleEmailLogin()}
+      >
+        Email
       </div>
     </div>
   );

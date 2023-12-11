@@ -12,8 +12,10 @@ function getTagConditions(tag: any) {
         tagged: {
           some: {
             tag: {
-              name: {
-                equals: tag,
+              tagInfo: {
+                some: {
+                  name: tag,
+                },
               },
             },
           },
@@ -94,14 +96,24 @@ export async function showTopics(
       topicInfo: {
         where: {
           languages: {
-            OR: [{ code: "en" }, { code: code && code.toLowerCase() }],
+            OR: [{ code: "en" }, { code: code }],
           },
         },
       },
       tagged: {
         select: {
-          id: true,
-          tag: true,
+          tag: {
+            select: {
+              id: true,
+              tagInfo: {
+                where: {
+                  languages: {
+                    OR: [{ code: "en" }, { code: code }],
+                  },
+                },
+              },
+            },
+          },
         },
       },
     },

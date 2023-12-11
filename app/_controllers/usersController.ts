@@ -103,6 +103,9 @@ export async function authenticateUserSocially(
     if (!shouldSignUp) {
       return errorReturn(errors.user_not_found);
     }
+    console.log("====================================");
+    console.log("automatic signup (tried to login)");
+    console.log("====================================");
     return successReturn({
       token: await issueToken(
         await prisma.users.create({
@@ -158,6 +161,9 @@ export async function createVerifiedUser(
     if (!shouldLogin) {
       return errorReturn(errors.user_exist);
     }
+    console.log("====================================");
+    console.log("automatic login (tried to signup)");
+    console.log("====================================");
     return successReturn({
       token: await issueToken(user),
     });

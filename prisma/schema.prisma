@@ -46,6 +46,7 @@ model languages {
   language  String      @unique
   code      String      @unique
   topicInfo topicInfo[]
+  tagInfo   tagInfo[]
 }
 
 model topicInfo {
@@ -60,10 +61,19 @@ model topicInfo {
 }
 
 model tags {
-  id       Int      @id @default(autoincrement())
-  name     String
+  id       Int       @id @default(autoincrement())
   priority Int?
   tagged   tagged[]
+  tagInfo  tagInfo[]
+}
+
+model tagInfo {
+  id         Int       @id @default(autoincrement())
+  name       String
+  languages  languages @relation(fields: [languageId], references: [id], onDelete: Cascade)
+  languageId Int
+  tags       tags?     @relation(fields: [tagId], references: [id], onDelete: Cascade)
+  tagId      Int?
 }
 
 model votes {
