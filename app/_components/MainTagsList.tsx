@@ -5,6 +5,7 @@ import Link from "next/link";
 import { useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
 import { createQueryString } from "../_lib/searchParamsHelper";
+import api from "../_lib/api";
 
 export function MainTagsList() {
   const searchParams = useSearchParams();
@@ -15,7 +16,19 @@ export function MainTagsList() {
   ]);
 
   const getTags = async () => {
-    //fetch tags and assign to state
+    let result = await api.get(`/public/tags`);
+    if (!result.data.success) {
+      console.error(`errorCode(${result.data.errorCode})`);
+      return;
+    }
+    setTags(
+      result.data.result.map((tag) => {
+        return {
+          id: tag.id,
+          name: tag.tagInfo[tag.tagInfo.length - 1].language,
+        };
+      })
+    );
   };
 
   useEffect(() => {
