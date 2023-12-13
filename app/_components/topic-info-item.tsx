@@ -5,7 +5,7 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { useEffect, useState } from "react";
 
-const TopicInfoItem = ({ languageID, language, updateTopicItems }) => {
+const TopicInfoItem = ({ languageId, language, updateTopicItems }) => {
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
   const [options, setOptions] = useState([]);
@@ -90,7 +90,7 @@ const TopicInfoItem = ({ languageID, language, updateTopicItems }) => {
         <Button
           className="w-full mt-5"
           onClick={() =>
-            updateTopicItems(languageID, title, description, options)
+            updateTopicItems(languageId, title, description, options)
           }
         >
           Save {language}

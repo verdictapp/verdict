@@ -41,8 +41,8 @@ export default function AdminTopics() {
       let topicInfo = topic.topicInfo[topic.topicInfo.length - 1];
       return {
         id: topic.id,
-        title: topicInfo.title,
-        description: topicInfo.description,
+        title: topicInfo?.title || "",
+        description: topicInfo?.description || "",
         createdAt: moment(topic.createdAt).format("DD/MM/YYYY"),
       };
     });

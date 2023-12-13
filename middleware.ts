@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
 import { verifyToken } from "./app/_lib/tokenHandler";
-const DEBUG = false;
+const DEBUG = true;
 
 export async function middleware(request: NextRequest) {
   if (DEBUG) return NextResponse.next();

@@ -12,6 +12,7 @@ import { useEffect, useState } from "react";
 import { ToastAction } from "@/components/ui/toast";
 import { useToast } from "@/components/ui/use-toast";
 import { useRouter } from "next/navigation";
+import api from "@/app/_lib/api";
 
 export const dynamic = "force-dynamic";
 
@@ -19,7 +20,7 @@ const page = () => {
   const [thumbnail, setThumbnail] = useState("");
   const [topicItems, setTopicItems] = useState([]);
   const [priority, setPriority] = useState(0);
-  const [tIState, setTIState] = useState("");
+  const [tIState, setTIState] = useState(0);
   const [isAddTagOpen, setIsAddTagOpen] = useState(false);
   const [tags, setTags] = useState([
     { id: 1, name: "tag 1" },
@@ -37,14 +38,51 @@ const page = () => {
 
   const getTags = async () => {
     //get list of tags from backend and assign to tags state and call in useEffect on first render
+    let result = await api.get("/public/tags");
+    if (!result.data.success) {
+      console.error(`errorCode(${result.data.errorCode})`);
+      return;
+    }
+    setTags(
+      result.data.result.map((tag) => {
+        return {
+          id: tag.id,
+          name: tag.tagInfo[0].name,
+        };
+      })
+    );
   };
 
   const getLanguages = async () => {
     // get list of languages and set to the languages state and call in useEffect on first render
+    let result = await api.get("/public/languages");
+    if (!result.data.success) {
+      console.error(`errorCode(${result.data.errorCode})`);
+      return;
+    }
+    setLanguages(
+      result.data.result.map((language) => {
+        return {
+          id: language.id,
+          language: language.language,
+          code: language.code,
+        };
+      })
+    );
   };
 
   const handleSubmit = async () => {
     //submit topic to api and redirect to topics page
+    let result = await api.post("/admin/topics/create/", {
+      data: topicItems,
+      priority: priority,
+      image: thumbnail,
+      state: tIState,
+    });
+    if (!result.data.success) {
+      console.error(`errorCode(${result.data.errorCode})`);
+      return;
+    }
     toast({
       title: "Success!",
       description: "Topic has been created successfully",
@@ -58,7 +96,7 @@ const page = () => {
     let ops = Object.assign({}, options);
     setTopicItems((old) =>
       old.map((o) => {
-        if (o.languageID === langID) {
+        if (o.languageId === langID) {
           exist = true;
           o.title = title;
           o.description = description;
@@ -72,7 +110,7 @@ const page = () => {
       setTopicItems((old) => [
         ...old,
         {
-          languageID: langID,
+          languageId: langID,
           title: title,
           description: description,
           options: ops,
@@ -100,6 +138,11 @@ const page = () => {
   const handleAddTag = () => {
     setIsAddTagOpen(true);
   };
+
+  useEffect(() => {
+    getTags();
+    getLanguages();
+  }, []);
 
   return (
     <div className="flex">
@@ -166,7 +209,7 @@ const page = () => {
 
           {languages.map((lang) => (
             <TopicInfoItem
-              languageID={lang.id}
+              languageId={lang.id}
               language={lang.language}
               updateTopicItems={saveTopicInfo}
             />
@@ -177,7 +220,7 @@ const page = () => {
       {/* <TopicInfoModal
         isOpen={isLangOpen}
         setIsOpen={setIsLangOpen}
-        langID={selectedTopicInfo.languageID}
+        langID={selectedTopicInfo.languageId}
         language={selectedTopicInfo.language}
         title={selectedTopicInfo.title}
         description={selectedTopicInfo.description}
