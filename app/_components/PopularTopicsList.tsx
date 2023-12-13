@@ -1,16 +1,25 @@
 import { ScrollArea } from "@/components/ui/scroll-area";
 import Link from "next/link";
+import { showTopics } from "../_controllers/topicsController";
 
 // const popularTopics = Array.from({ length: 10 }).map(
 //   (_, i, a) => `v1.2.0-beta.${a.length - i}`
 // );
 
-export function PopularTopicsList() {
+export async function PopularTopicsList() {
   //get popular topics from backend as this is serverside
-  let popularTopics = [
-    { id: 1, title: "Title 1" },
-    { id: 2, title: "Title 2" },
-  ];
+  let result = await showTopics(undefined, undefined, undefined, "popular");
+  if (!result.success) {
+    console.error(`errorCode(${result.errorCode})`);
+    return;
+  }
+
+  let popularTopics = result.returned.map((topic) => {
+    return {
+      id: topic.id,
+      title: topic.topicInfo[topic.topicInfo.length - 1].title,
+    };
+  });
 
   return (
     <ScrollArea className="h-screen rounded-md">
