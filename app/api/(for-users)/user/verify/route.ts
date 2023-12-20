@@ -11,7 +11,7 @@ export async function POST(request: NextRequest) {
   if (!authResult.success) return errorResponse(authResult.errorCode);
 
   let result = await verifyUser(
-    JSON.parse(request.headers.get("user")).id,
+    Number(request.headers.get("userId")),
     authResult.returned.email
   );
   if (!result.success) return errorResponse(result.errorCode);

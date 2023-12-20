@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
 import { verifyToken } from "./app/_lib/tokenHandler";
+import { isAdmin } from "./app/_controllers/usersController";
 const DEBUG = true;
 
 export async function middleware(request: NextRequest) {
@@ -21,24 +22,15 @@ export async function middleware(request: NextRequest) {
     if (result.success) {
       // protecting admin path
       if (
-        !result.returned.admin &&
+        !(await isAdmin(result.returned.id)).returned &&
         request.nextUrl.pathname.startsWith("/api/admin")
       ) {
         return NextResponse.json({ message: "unauthorized" }, { status: 403 });
       }
 
-      // passing the user
+      // passing the user's id
       const headers = new Headers(request.headers);
-      headers.set(
-        "user",
-        JSON.stringify({
-          id: result.returned.id,
-          password: result.returned.password,
-          admin: result.returned.admin,
-          membership: result.returned.membership,
-          verified: result.returned.verified,
-        })
-      );
+      headers.set("userId", result.returned.id);
       return NextResponse.next({ headers: headers });
     } else {
       return NextResponse.json({ message: "unauthenticated" }, { status: 401 });

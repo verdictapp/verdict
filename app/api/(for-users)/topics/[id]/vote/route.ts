@@ -7,7 +7,7 @@ export async function POST(request: NextRequest, { params }) {
   let body = await request.json();
   let result = await createVote(
     Number(params.id),
-    JSON.parse(request.headers.get("user")).id,
+    Number(request.headers.get("userId")),
     body.vote
   );
   if (result.errorCode) {
