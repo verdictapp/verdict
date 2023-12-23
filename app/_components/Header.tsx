@@ -8,9 +8,13 @@ import { UserMenu } from "./UserMenu";
 import { Separator } from "@/components/ui/separator";
 import logo from "../../assets/logo.png";
 import { useRouter } from "next/navigation";
+import { AuthModal } from "./modals/auth-modal";
+import { Button } from "@/components/ui/button";
 
 const Header = () => {
   const router = useRouter();
+  const [isAuthOpen, setIsAuthOpen] = useState(false);
+  const isLoggedIn = false;
   return (
     <>
       <nav className="w-full px-1 md:px-3 py-2 border-b md:border-0 flex justify-between bg-primary-foreground fixed z-10">
@@ -28,10 +32,20 @@ const Header = () => {
           />
         </div>
         <div className="px-2 md:px-5 flex items-center">
-          <UserMenu />
+          {isLoggedIn ? (
+            <UserMenu />
+          ) : (
+            <div className="space-x-3">
+              <Button variant="secondary" onClick={() => setIsAuthOpen(true)}>
+                Login
+              </Button>
+              <Button onClick={() => setIsAuthOpen(true)}>Join Us</Button>
+            </div>
+          )}
         </div>
       </nav>
       <Separator />
+      <AuthModal isOpen={isAuthOpen} setIsOpen={setIsAuthOpen} />
     </>
   );
 };

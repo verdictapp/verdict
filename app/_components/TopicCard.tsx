@@ -16,10 +16,10 @@ const TopicCard = ({
     <div className="bg-primary-foreground rounded-md w-full p-3 mb-7">
       <Link href={`/topics/${id}`}>
         <div className="flex">
-          <Image
+          <img
             src={photo}
             alt={""}
-            className="w-14 rounded overflow-hidden mr-3"
+            className="w-14 h-14 rounded overflow-hidden mr-3 object-cover"
             width={56}
             height={56}
           />
