@@ -1,5 +1,8 @@
-import React from "react";
+"use client";
+
+import React, { useState } from "react";
 import OptionProgress from "./OptionProgress";
+import { AuthModal } from "./modals/auth-modal";
 
 const TopicInfo = ({
   id,
@@ -10,6 +13,12 @@ const TopicInfo = ({
   options,
   votedOn,
 }) => {
+  const [isAuthOpen, setIsAuthOpen] = useState(false);
+
+  const handleVote = (vid) => {
+    //check if the user is authenticated and either submit the vote or setIsAuthOpen to true
+  };
+
   return (
     <div className="bg-primary-foreground rounded-md w-full mb-7 overflow-hidden">
       <img src={photo} alt={""} className="w-full overflow-hidden mr-3" />
@@ -22,15 +31,17 @@ const TopicInfo = ({
         <div className="pt-5">
           {options.map((option) => (
             <OptionProgress
+              key={option.id}
               id={option.id}
               title={option.title}
               percentage={option.percentage}
               isVoted={option.isVotedOn}
-              key={option.id}
+              onVote={handleVote}
             />
           ))}
         </div>
       </div>
+      <AuthModal isOpen={isAuthOpen} setIsOpen={setIsAuthOpen} />
     </div>
   );
 };

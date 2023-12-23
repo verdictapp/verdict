@@ -18,7 +18,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Separator } from "@/components/ui/separator";
 import google from "../../../assets/Google.webp";
 
-export function AuthModal({ isOpen, setIsOpen }) {
+export function AuthModal({ isOpen, setIsOpen, tab = "login" }) {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
 
@@ -30,14 +30,13 @@ export function AuthModal({ isOpen, setIsOpen }) {
     <Dialog open={isOpen} onOpenChange={() => setIsOpen(!isOpen)}>
       <DialogContent className="sm:max-w-[425px]">
         <DialogHeader>
-          {/* <DialogTitle>{authMethod === 0 ? "Login" : "Signup"}</DialogTitle>*/}
           <DialogDescription>
             Login or Signup with your social account to be a verified user. It's
             Free
           </DialogDescription>
         </DialogHeader>
 
-        <Tabs defaultValue="login">
+        <Tabs defaultValue={tab}>
           <TabsList className="grid w-full grid-cols-2">
             <TabsTrigger value="login">Login</TabsTrigger>
             <TabsTrigger value="signup">Signup</TabsTrigger>
@@ -45,11 +44,11 @@ export function AuthModal({ isOpen, setIsOpen }) {
           <TabsContent value="login">
             <div className="grid gap-4 py-4">
               <div className="grid grid-cols-4 items-center gap-4">
-                <Label htmlFor="username" className="text-right">
+                <Label htmlFor="usernameL" className="text-right">
                   Username
                 </Label>
                 <Input
-                  id="username"
+                  id="usernameL"
                   placeholder={`username`}
                   className="col-span-3"
                   value={username}
@@ -57,11 +56,11 @@ export function AuthModal({ isOpen, setIsOpen }) {
                 />
               </div>
               <div className="grid grid-cols-4 items-center gap-4">
-                <Label htmlFor="password" className="text-right">
+                <Label htmlFor="passwordL" className="text-right">
                   Password
                 </Label>
                 <Input
-                  id="password"
+                  id="passwordL"
                   placeholder={`●●●●●●●●●●`}
                   className="col-span-3"
                   value={password}
@@ -94,11 +93,11 @@ export function AuthModal({ isOpen, setIsOpen }) {
           <TabsContent value="signup">
             <div className="grid gap-4 py-4">
               <div className="grid grid-cols-4 items-center gap-4">
-                <Label htmlFor="username" className="text-right">
+                <Label htmlFor="usernameS" className="text-right">
                   Username
                 </Label>
                 <Input
-                  id="username"
+                  id="usernameS"
                   placeholder={`username`}
                   className="col-span-3"
                   value={username}
@@ -106,11 +105,11 @@ export function AuthModal({ isOpen, setIsOpen }) {
                 />
               </div>
               <div className="grid grid-cols-4 items-center gap-4">
-                <Label htmlFor="password" className="text-right">
+                <Label htmlFor="passwordS" className="text-right">
                   Password
                 </Label>
                 <Input
-                  id="password"
+                  id="passwordS"
                   placeholder={`●●●●●●●●●●`}
                   className="col-span-3"
                   value={password}

@@ -14,6 +14,7 @@ import { Button } from "@/components/ui/button";
 const Header = () => {
   const router = useRouter();
   const [isAuthOpen, setIsAuthOpen] = useState(false);
+  const [authMethod, setAuthMethod] = useState("login");
   const isLoggedIn = false;
   return (
     <>
@@ -36,16 +37,33 @@ const Header = () => {
             <UserMenu />
           ) : (
             <div className="space-x-3">
-              <Button variant="secondary" onClick={() => setIsAuthOpen(true)}>
+              <Button
+                variant="secondary"
+                onClick={() => {
+                  setAuthMethod("login");
+                  setIsAuthOpen(true);
+                }}
+              >
                 Login
               </Button>
-              <Button onClick={() => setIsAuthOpen(true)}>Join Us</Button>
+              <Button
+                onClick={() => {
+                  setAuthMethod("signup");
+                  setIsAuthOpen(true);
+                }}
+              >
+                Join Us
+              </Button>
             </div>
           )}
         </div>
       </nav>
       <Separator />
-      <AuthModal isOpen={isAuthOpen} setIsOpen={setIsAuthOpen} />
+      <AuthModal
+        isOpen={isAuthOpen}
+        setIsOpen={setIsAuthOpen}
+        tab={authMethod}
+      />
     </>
   );
 };
