@@ -29,7 +29,7 @@ export async function verifyToken(token: string) {
  * @returns the created token
  */
 export async function issueToken(user) {
-  let token = await new jose.SignJWT(user)
+  let token = await new jose.SignJWT({ id: user.id })
     .setProtectedHeader({ alg: "HS256" })
     .setIssuedAt()
     .sign(new TextEncoder().encode(process.env.JWT_SECRET_TOKEN as string));

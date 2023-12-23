@@ -3,9 +3,9 @@ import { successResponse } from "@/app/_lib/responseGenerator";
 import { NextRequest } from "next/server";
 
 export async function PUT(request: NextRequest) {
-  let user = JSON.parse(request.headers.get("user"));
+  let userId = Number(request.headers.get("userId"));
   let body = await request.json();
-  await updateInformation(user.id, {
+  await updateInformation(userId, {
     gender: body.gender,
     dateOfBirth: body.dateOfBirth,
     location: body.location,

@@ -1,7 +1,6 @@
 import { createAdmin } from "@/app/_controllers/usersController";
 import prisma from "@/app/_lib/prisma";
-import { errorResponse, successResponse } from "@/app/_lib/responseGenerator";
-import { issueToken } from "@/app/_lib/tokenHandler";
+import { successResponse } from "@/app/_lib/responseGenerator";
 export async function GET() {
   await prisma.users.deleteMany();
   await prisma.topics.deleteMany();

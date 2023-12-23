@@ -11,7 +11,7 @@ export async function GET(request: NextRequest) {
     request.nextUrl.searchParams.get("tag") || undefined,
     request.nextUrl.searchParams.get("search"),
     request.nextUrl.searchParams.get("code") || undefined,
-    JSON.parse(request.headers.get("user")).id
+    Number(request.headers.get("userId"))
   );
   return successResponse(result.returned);
 }

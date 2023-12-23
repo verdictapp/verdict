@@ -5,11 +5,10 @@ import { errorResponse, successResponse } from "@/app/_lib/responseGenerator";
 import { NextRequest } from "next/server";
 
 export async function PUT(request: NextRequest) {
-  let user = JSON.parse(request.headers.get("user"));
+  let userId = Number(request.headers.get("userId"));
   let body = await request.json();
-  if (await isSamePass(body.oldPassword, user.password)) {
-    let result = await updatePassword(user.id, body.newPassword);
-    return successResponse(result.returned);
-  }
-  return errorResponse(errors.incorrect_password);
+  let result = await updatePassword(userId, body.oldPassword, body.newPassword);
+  if (!result.success) return errorResponse(result.errorCode);
+
+  return successResponse(result.returned);
 }

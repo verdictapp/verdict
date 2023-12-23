@@ -214,18 +214,16 @@ export async function updateUsername(id: number, newUsername: string) {
     return errorReturn(errors.username_taken);
   }
 
-  return successReturn({
-    token: await issueToken(
-      await prisma.users.update({
-        where: {
-          id: id,
-        },
-        data: {
-          username: newUsername,
-        },
-      })
-    ),
+  await prisma.users.update({
+    where: {
+      id: id,
+    },
+    data: {
+      username: newUsername,
+    },
   });
+
+  return successReturn();
 }
 /**
  * updates user's password
@@ -233,19 +231,44 @@ export async function updateUsername(id: number, newUsername: string) {
  * @param id user's id
  * @param newPass new password
  */
-export async function updatePassword(id: number, newPassword?: string) {
-  return successReturn({
-    token: await issueToken(
-      await prisma.users.update({
-        where: {
-          id: id,
-        },
-        data: {
-          password: await hashPass(newPassword),
-        },
-      })
-    ),
+export async function updatePassword(
+  id: number,
+  oldPassword: string,
+  newPassword: string
+) {
+  let user = await prisma.users.findFirst({
+    where: {
+      id: id,
+    },
+    select: {
+      password: true,
+    },
   });
+
+  if (!(await isSamePass(oldPassword, user.password)))
+    return errorReturn(errors.incorrect_password);
+
+  await prisma.users.update({
+    where: {
+      id: id,
+    },
+    data: {
+      password: await hashPass(newPassword),
+    },
+  });
+
+  return successReturn();
+
+  await prisma.users.update({
+    where: {
+      id: id,
+    },
+    data: {
+      password: await hashPass(newPassword),
+    },
+  });
+
+  return successReturn();
 }
 /**
  * update user related information
@@ -310,4 +333,16 @@ export async function deleteUser(id: number) {
     },
   });
   return successReturn();
+}
+
+export async function isAdmin(id: number) {
+  let user = await prisma.users.findFirst({
+    where: {
+      id: id,
+    },
+    select: {
+      admin: true,
+    },
+  });
+  return successReturn(user.admin);
 }
