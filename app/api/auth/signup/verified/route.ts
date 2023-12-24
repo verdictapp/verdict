@@ -1,8 +1,9 @@
 import { createVerifiedUser } from "@/app/_controllers/usersController";
-// import { adminAuth } from "@/app/_firebase/admin";
 import { firebaseAuth } from "@/app/_lib/authProviders";
-// import { googleAuth } from "@/app/_lib/authProviders";
-import { errorResponse, successResponse } from "@/app/_lib/responseGenerator";
+import {
+  errorResponse,
+  successLoginResponse,
+} from "@/app/_lib/responseGenerator";
 
 import { NextRequest } from "next/server";
 
@@ -18,7 +19,7 @@ export async function POST(request: NextRequest) {
   );
   if (!result.success) return errorResponse(result.errorCode);
 
-  return successResponse(result.returned);
+  return successLoginResponse(result.returned);
 
   // switch (body.provider.toLowerCase()) {
   //   case "google": {
