@@ -5,6 +5,8 @@ import OptionProgress from "./OptionProgress";
 import Link from "next/link";
 import Image from "next/image";
 import { AuthModal } from "./modals/auth-modal";
+import { useCookies } from "next-client-cookies";
+import api from "../_lib/api";
 
 const TopicCard = ({
   id,
@@ -17,8 +19,22 @@ const TopicCard = ({
   isAuthOpen,
   setIsAuthOpen,
 }) => {
-  const handleVote = (vid) => {
+  const cookies = useCookies();
+
+  const handleVote = async (vid) => {
     //check if the user is authenticated and either submit the vote or setIsAuthOpen to true
+    if (!cookies.get("authToken")) {
+      setIsAuthOpen(true);
+      return;
+    }
+
+    let result = await api.post(`/topics/${id}/vote`, {
+      vote: vid,
+    });
+    if (!result.data.success) {
+      console.error(`errorCode(${result.data.errorCode})`);
+      return;
+    }
   };
 
   return (

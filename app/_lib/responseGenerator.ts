@@ -10,7 +10,6 @@ export function successLoginResponse(tokenObject?: { token: string }) {
         "Set-Cookie": serialize("authToken", tokenObject.token, {
           secure: true,
           domain: "localhost",
-          httpOnly: true,
           path: "/",
         }),
       },

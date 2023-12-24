@@ -1,5 +1,5 @@
 import prisma from "../app/_lib/prisma";
-import bcrypt from "bcrypt";
+import bcrypt from "bcryptjs";
 
 async function reset() {
   await prisma.languages.deleteMany();
@@ -34,7 +34,7 @@ async function createUsers(users) {
     data: {
       admin: true,
       username: "admin",
-      password: await bcrypt.hash("admin", 10),
+      password: bcrypt.hashSync("admin", 10),
       verified: true,
     },
   });
@@ -43,7 +43,7 @@ async function createUsers(users) {
       admin: false,
       verified: false,
       username: "unverified",
-      password: "unverified",
+      password: bcrypt.hashSync("unverified", 10),
     },
   });
 }

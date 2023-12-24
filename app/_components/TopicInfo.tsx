@@ -3,6 +3,8 @@
 import React, { useState } from "react";
 import OptionProgress from "./OptionProgress";
 import { AuthModal } from "./modals/auth-modal";
+import { useCookies } from "next-client-cookies";
+import api from "../_lib/api";
 
 const TopicInfo = ({
   id,
@@ -14,9 +16,21 @@ const TopicInfo = ({
   votedOn,
 }) => {
   const [isAuthOpen, setIsAuthOpen] = useState(false);
+  const cookies = useCookies();
 
-  const handleVote = (vid) => {
-    //check if the user is authenticated and either submit the vote or setIsAuthOpen to true
+  const handleVote = async (vid) => {
+    if (!cookies.get("authToken")) {
+      setIsAuthOpen(true);
+      return;
+    }
+
+    let result = await api.post(`/topics/${id}/vote`, {
+      vote: vid,
+    });
+    if (!result.data.success) {
+      console.error(`errorCode(${result.data.errorCode})`);
+      return;
+    }
   };
 
   return (

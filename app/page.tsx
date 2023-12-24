@@ -8,9 +8,17 @@ import MainTopicsList from "./_components/main-topics-list";
 
 export const dynamic = "force-dynamic";
 
-export default async function Home() {
+export default async function Home({ searchParams }) {
   // fetch topics with the controller as this is serverside
-  let result = await showTopics();
+  let result = await showTopics(
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    Number(searchParams.userId)
+  );
   if (!result.success) {
     console.error(`errorCode(${result.errorCode})`);
     return;
@@ -41,7 +49,8 @@ export default async function Home() {
           id: option,
           title: topicInfo.options[option],
           percentage: percentage,
-          isVotedOn: false,
+          isVotedOn:
+            topic.votes.length !== 0 ? topic.votes[0].vote === option : false,
         };
       }),
     };

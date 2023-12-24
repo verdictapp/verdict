@@ -15,7 +15,6 @@ export async function middleware(request: NextRequest) {
     token
     // request.headers.get("authorization")?.split(" ")[1] || undefined
   );
-
   if (request.nextUrl.pathname.startsWith("/api")) {
     if (
       // public access for auth and public paths
@@ -27,7 +26,7 @@ export async function middleware(request: NextRequest) {
     if (result.success) {
       // protecting admin path
       if (
-        !(await isAdmin(result.returned.id)).returned &&
+        !result.returned.admin &&
         request.nextUrl.pathname.startsWith("/api/admin")
       ) {
         return NextResponse.json({ message: "unauthorized" }, { status: 403 });
@@ -47,7 +46,6 @@ export async function middleware(request: NextRequest) {
       (request.nextUrl.href.includes("?")
         ? `&userId=${result.returned.id}`
         : `?userId=${result.returned.id}`);
-
     return NextResponse.rewrite(newHref);
   }
 }

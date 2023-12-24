@@ -2,6 +2,7 @@ import { Toaster } from "@/components/ui/toaster";
 import Header from "./_components/Header";
 import "./globals.css";
 import { Inter } from "next/font/google";
+import { CookiesProvider } from "next-client-cookies/server";
 
 export const metadata = {
   metadataBase: new URL("https://postgres-prisma.vercel.app"),
@@ -22,12 +23,14 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="en">
-      <body className={`${inter.variable} dark relative`}>
-        <Header />
-        {children}
-        <Toaster />
-      </body>
-    </html>
+    <CookiesProvider>
+      <html lang="en">
+        <body className={`${inter.variable} dark relative`}>
+          <Header />
+          {children}
+          <Toaster />
+        </body>
+      </html>
+    </CookiesProvider>
   );
 }
