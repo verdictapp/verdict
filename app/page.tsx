@@ -4,6 +4,7 @@ import { PopularTopicsList } from "./_components/PopularTopicsList";
 import TopicCard from "./_components/TopicCard";
 import { showTopics } from "./_controllers/topicsController";
 import api from "./_lib/api";
+import MainTopicsList from "./_components/main-topics-list";
 
 export const dynamic = "force-dynamic";
 
@@ -109,18 +110,7 @@ export default async function Home() {
         <MainTagsList />
       </div>
       <div className="w-full md:w-4/6 px-3 lg:px-24 xl:px-40 2xl:px-72 pt-24">
-        {topics.map((topic) => (
-          <TopicCard
-            id={topic.id}
-            title={topic.title}
-            description={topic.description}
-            createdAt={topic.createdAt}
-            options={topic.options}
-            photo={topic.photo}
-            votedOn={""}
-            key={topic.id}
-          />
-        ))}
+        <MainTopicsList topics={topics} />
       </div>
       <div className="w-0 md:w-1/6 mt-20 sticky md:px-5">
         <PopularTopicsList />

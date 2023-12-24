@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React from "react";
 import OptionProgress from "./OptionProgress";
 import Link from "next/link";
 import Image from "next/image";
@@ -14,8 +14,9 @@ const TopicCard = ({
   createdAt,
   options,
   votedOn,
+  isAuthOpen,
+  setIsAuthOpen,
 }) => {
-  const [isAuthOpen, setIsAuthOpen] = useState(false);
   const handleVote = (vid) => {
     //check if the user is authenticated and either submit the vote or setIsAuthOpen to true
   };
