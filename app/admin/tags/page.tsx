@@ -3,6 +3,7 @@
 import { ConfirmationDialog } from "@/app/_components/modals/ConfirmationDialog";
 import AddTagModal from "@/app/_components/modals/add-tag-modal";
 import UpdateTagModal from "@/app/_components/modals/update-tag-modal";
+import api from "@/app/_lib/api";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import {
@@ -16,7 +17,7 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { Edit, Trash } from "lucide-react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 export const dynamic = "force-dynamic";
 
 const Tags = () => {
@@ -37,14 +38,36 @@ const Tags = () => {
     setFilteredTags(() => tags.filter((tag) => tag.name.includes(value)));
   };
 
-  const getTags = () => {
-    // fetch all tags and assign to tags state
+  const getTags = async () => {
+    let result = await api.get("/public/tags");
+    if (!result.data.success) {
+      console.error(`errorCode(${result.data.errorCode})`);
+      return;
+    }
+    let tags = result.data.result.map((tag) => {
+      let tagInfo = tag.tagInfo[tag.tagInfo.length - 1];
+      return {
+        id: tag.id,
+        name: tagInfo.name,
+        priority: tag.priority,
+      };
+    });
+    setTags(tags);
+    setFilteredTags(tags);
   };
 
-  const handleDeleteTag = (tag) => {
-    // delete the tag
+  const handleDeleteTag = async (tag) => {
+    let result = await api.delete(`/admin/tags/${tag}/delete`);
+    if (!result.data.success) {
+      console.error(`errorCode(${result.data.errorCode})`);
+      return;
+    }
     getTags();
   };
+
+  useEffect(() => {
+    getTags();
+  }, []);
 
   return (
     <>
@@ -90,7 +113,7 @@ const Tags = () => {
                     description={
                       "This action cannot be undone. This will permanently delete the tag."
                     }
-                    onConfirm={handleDeleteTag}
+                    onConfirm={() => handleDeleteTag(tag.id)}
                   />
                 </TableCell>
               </TableRow>
