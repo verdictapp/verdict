@@ -26,7 +26,7 @@ const TopicCard = ({
       <Link
         href={`/topics/${id}?title=${title}&description=${description}&createdAt=${createdAt}&options=${JSON.stringify(
           options
-        )}`}
+        )}&photo=${photo}`}
       >
         <div className="flex">
           <img
