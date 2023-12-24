@@ -55,58 +55,52 @@ export default function AdminTopics() {
   }, []);
 
   return (
-    <div className="flex">
-      <div className="w-0 md:w-1/6 mt-20 sticky md:px-5"></div>
-      <div className="w-full md:w-4/6 px-2 lg:px-20 xl:px-48 pt-24">
-        <div className="bg-primary-foreground px-4 py-2 rounded-md">
-          <div className="flex justify-between items-center py-3">
-            <Input
-              placeholder="Filter topics..."
-              onChange={(event) => handleFilterTopics(event.target.value)}
-              className="max-w-sm"
-            />
-            <Button onClick={() => router.push("/admin/topics/create")}>
-              Create
-            </Button>
-          </div>
-          <Table>
-            <TableCaption>A list of topics.</TableCaption>
-            <TableHeader>
-              <TableRow>
-                <TableHead className="w-[100px]">ID</TableHead>
-                <TableHead>Title</TableHead>
-                <TableHead>Description</TableHead>
-                <TableHead className="text-right">Created At</TableHead>
-              </TableRow>
-            </TableHeader>
-            <TableBody>
-              {filteredTopics.map((topic) => (
-                <TableRow
-                  key={topic.id}
-                  onClick={() => router.push(`/admin/topics/${topic.id}`)}
-                  className="cursor-pointer"
-                >
-                  <TableCell className="font-medium">{topic.id}</TableCell>
-                  <TableCell>{topic.title}</TableCell>
-                  <TableCell>{topic.description}</TableCell>
-                  <TableCell className="text-right">
-                    {topic.createdAt}
-                  </TableCell>
-                </TableRow>
-              ))}
-            </TableBody>
-            <TableFooter>
-              <TableRow>
-                <TableCell colSpan={3}>Number Of Topics</TableCell>
-                <TableCell className="text-right">
-                  {filteredTopics.length}
-                </TableCell>
-              </TableRow>
-            </TableFooter>
-          </Table>
+    <>
+      <div className="bg-primary-foreground px-4 py-2 rounded-md">
+        <div className="flex justify-between items-center py-3">
+          <Input
+            placeholder="Filter topics..."
+            onChange={(event) => handleFilterTopics(event.target.value)}
+            className="max-w-sm"
+          />
+          <Button onClick={() => router.push("/admin/topics/create")}>
+            Create
+          </Button>
         </div>
+        <Table>
+          <TableCaption>A list of topics.</TableCaption>
+          <TableHeader>
+            <TableRow>
+              <TableHead className="w-[100px]">ID</TableHead>
+              <TableHead>Title</TableHead>
+              <TableHead>Description</TableHead>
+              <TableHead className="text-right">Created At</TableHead>
+            </TableRow>
+          </TableHeader>
+          <TableBody>
+            {filteredTopics.map((topic) => (
+              <TableRow
+                key={topic.id}
+                onClick={() => router.push(`/admin/topics/${topic.id}`)}
+                className="cursor-pointer"
+              >
+                <TableCell className="font-medium">{topic.id}</TableCell>
+                <TableCell>{topic.title}</TableCell>
+                <TableCell>{topic.description}</TableCell>
+                <TableCell className="text-right">{topic.createdAt}</TableCell>
+              </TableRow>
+            ))}
+          </TableBody>
+          <TableFooter>
+            <TableRow>
+              <TableCell colSpan={3}>Number Of Topics</TableCell>
+              <TableCell className="text-right">
+                {filteredTopics.length}
+              </TableCell>
+            </TableRow>
+          </TableFooter>
+        </Table>
       </div>
-      <div className="w-0 md:w-1/6 mt-20 sticky md:px-5"></div>
-    </div>
+    </>
   );
 }

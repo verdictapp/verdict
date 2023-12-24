@@ -23,7 +23,11 @@ const TopicCard = ({
 
   return (
     <div className="bg-primary-foreground rounded-md w-full p-3 mb-7">
-      <Link href={`/topics/${id}`}>
+      <Link
+        href={`/topics/${id}?title=${title}&description=${description}&createdAt=${createdAt}&options=${JSON.stringify(
+          options
+        )}`}
+      >
         <div className="flex">
           <img
             src={photo}

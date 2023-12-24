@@ -1,7 +1,7 @@
 "use client";
 
 import ImageUpload from "@/app/_components/image-upload";
-import AddTopicModal from "@/app/_components/modals/add-topic-modal";
+import AddTagModal from "@/app/_components/modals/add-tag-modal";
 import { TopicInfoModal } from "@/app/_components/modals/topic-info-modal";
 import TopicInfoItem from "@/app/_components/topic-info-item";
 import { Button } from "@/components/ui/button";
@@ -145,78 +145,75 @@ const page = () => {
   }, []);
 
   return (
-    <div className="flex">
-      <div className="w-0 md:w-1/6 mt-20 sticky md:px-5"></div>
-      <div className="w-full md:w-4/6 px-2 lg:px-20 xl:px-48">
-        <div className="rounded-md w-full mb-7 overflow-hidden mt-24">
-          <div className="flex justify-end gap-x-3">
-            <Button variant="outline">Cancel</Button>
-            <Button onClick={() => handleSubmit()}>Save</Button>
-          </div>
-
-          <div className="bg-primary-foreground my-10 pb-5 rounded-md">
-            <div className="p-3 pt-5">
-              <h2 className="text-lg font-semibold">Topic Details</h2>
-              <div className="flex justify-between pt-5">
-                <Input
-                  placeholder="Thumbnail"
-                  // className="max-w-sm"
-                  value={thumbnail}
-                  onChange={(e) => {
-                    setThumbnail(e.target.value);
-                  }}
-                />
-              </div>
-              <Input
-                placeholder="Priority"
-                className="mt-5"
-                value={priority}
-                onChange={(e) => setPriority(Number(e.target.value))}
-                type="number"
-              />
-              {/* <div className="pt-5"></div> */}
-            </div>
-          </div>
-
-          <div className="bg-primary-foreground my-10 pb-5 rounded-md">
-            <div className="p-3 pt-5">
-              <h2 className="text-lg font-semibold">Tags</h2>
-              <div className="flex flex-wrap gap-x-3 mt-5">
-                {tags.map((tag, i) => (
-                  <Button
-                    onClick={() => handleSelectTag(tag.id)}
-                    variant={
-                      selectedTags.find((st) => st === tag.id) === tag.id
-                        ? "default"
-                        : "secondary"
-                    }
-                  >
-                    {selectedTags.find((st) => st === tag.id) ? (
-                      <Check className="mr-2 h-4 w-4" />
-                    ) : (
-                      <Circle className="mr-2 h-4 w-4" />
-                    )}{" "}
-                    {tag.name}
-                  </Button>
-                ))}
-                <Button onClick={() => handleAddTag()}>
-                  <Plus className="mr-2 h-4 w-4" /> Add Topic
-                </Button>
-              </div>
-              {/* <div className="pt-5"></div> */}
-            </div>
-          </div>
-
-          {languages.map((lang) => (
-            <TopicInfoItem
-              languageId={lang.id}
-              language={lang.language}
-              updateTopicItems={saveTopicInfo}
-            />
-          ))}
+    <>
+      <div className="rounded-md w-full mb-7 overflow-hidden">
+        <div className="flex justify-end gap-x-3">
+          <Button variant="outline">Cancel</Button>
+          <Button onClick={() => handleSubmit()}>Save</Button>
         </div>
+
+        <div className="bg-primary-foreground my-10 pb-5 rounded-md">
+          <div className="p-3 pt-5">
+            <h2 className="text-lg font-semibold">Topic Details</h2>
+            <div className="flex justify-between pt-5">
+              <Input
+                placeholder="Thumbnail"
+                // className="max-w-sm"
+                value={thumbnail}
+                onChange={(e) => {
+                  setThumbnail(e.target.value);
+                }}
+              />
+            </div>
+            <Input
+              placeholder="Priority"
+              className="mt-5"
+              value={priority}
+              onChange={(e) => setPriority(Number(e.target.value))}
+              type="number"
+            />
+            {/* <div className="pt-5"></div> */}
+          </div>
+        </div>
+
+        <div className="bg-primary-foreground my-10 pb-5 rounded-md">
+          <div className="p-3 pt-5">
+            <h2 className="text-lg font-semibold">Tags</h2>
+            <div className="flex flex-wrap gap-x-3 mt-5">
+              {tags.map((tag, i) => (
+                <Button
+                  onClick={() => handleSelectTag(tag.id)}
+                  variant={
+                    selectedTags.find((st) => st === tag.id) === tag.id
+                      ? "default"
+                      : "secondary"
+                  }
+                >
+                  {selectedTags.find((st) => st === tag.id) ? (
+                    <Check className="mr-2 h-4 w-4" />
+                  ) : (
+                    <Circle className="mr-2 h-4 w-4" />
+                  )}{" "}
+                  {tag.name}
+                </Button>
+              ))}
+              <Button onClick={() => handleAddTag()}>
+                <Plus className="mr-2 h-4 w-4" /> Add Tag
+              </Button>
+            </div>
+            {/* <div className="pt-5"></div> */}
+          </div>
+        </div>
+
+        {languages.map((lang) => (
+          <TopicInfoItem
+            languageId={lang.id}
+            language={lang.language}
+            updateTopicItems={saveTopicInfo}
+          />
+        ))}
       </div>
-      <div className="w-0 md:w-1/6 mt-20 sticky md:px-5"></div>
+
       {/* <TopicInfoModal
         isOpen={isLangOpen}
         setIsOpen={setIsLangOpen}
@@ -227,12 +224,12 @@ const page = () => {
         options={selectedTopicInfo.options}
         handleSave={handleSetTopicItems}
       /> */}
-      <AddTopicModal
+      <AddTagModal
         isOpen={isAddTagOpen}
         setIsOpen={setIsAddTagOpen}
         loadNewTags={getTags}
       />
-    </div>
+    </>
   );
 };
 

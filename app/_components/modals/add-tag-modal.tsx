@@ -17,7 +17,7 @@ import { ToastAction } from "@/components/ui/toast";
 import { useToast } from "@/components/ui/use-toast";
 import { useState } from "react";
 
-const AddTopicModal = ({ isOpen, setIsOpen, loadNewTags }) => {
+const AddTagModal = ({ isOpen, setIsOpen, loadNewTags }) => {
   const [name, setName] = useState("");
   const [priority, setPriority] = useState(0);
   const { toast } = useToast();
@@ -81,4 +81,4 @@ const AddTopicModal = ({ isOpen, setIsOpen, loadNewTags }) => {
   );
 };
 
-export default AddTopicModal;
+export default AddTagModal;
