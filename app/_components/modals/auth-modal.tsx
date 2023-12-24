@@ -17,14 +17,57 @@ import { useState } from "react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Separator } from "@/components/ui/separator";
 import google from "../../../assets/Google.webp";
+import api from "@/app/_lib/api";
+import { GoogleAuthProvider, signInWithPopup } from "firebase/auth";
+import { auth } from "@/app/_firebase/client";
 
 export function AuthModal({ isOpen, setIsOpen, tab = "login" }) {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
 
-  const handleLogin = () => {};
-  const handleSignup = () => {};
-  const handleGoogleLogin = () => {};
+  const handleLogin = async () => {
+    let result = await api.post("/auth/login/local", {
+      username,
+      password,
+    });
+
+    if (!result.data.success) {
+      console.error(`errorCode(${result.data.errorCode})`);
+      return;
+    }
+    setIsOpen(false);
+  };
+
+  const handleSignup = async () => {
+    let result = await api.post("/auth/signup/unverified", {
+      username,
+      password,
+    });
+
+    if (!result.data.success) {
+      console.error(`errorCode(${result.data.errorCode})`);
+      return;
+    }
+    setIsOpen(false);
+  };
+  const handleGoogleLogin = async () => {
+    signInWithPopup(auth, new GoogleAuthProvider())
+      .then(async (authResult) => {
+        let result = await api.post("auth/login/social", {
+          uid: authResult.user.uid,
+        });
+        if (!result.data.success) {
+          console.error(`errorCode(${result.data.errorCode})`);
+          return;
+        }
+        setIsOpen(false);
+      })
+      .catch((error) => {
+        console.log("====================================");
+        console.log("auth Error", error);
+        console.log("====================================");
+      });
+  };
 
   return (
     <Dialog open={isOpen} onOpenChange={() => setIsOpen(!isOpen)}>

@@ -77,7 +77,7 @@ export async function authenticateUserLocally(
   let user = await prisma.users.findUnique({
     where: { username: username },
   });
-  if (user && (await isSamePass(password, user.password))) {
+  if (user && isSamePass(password, user.password)) {
     return successReturn({
       token: await issueToken(user),
     });
@@ -135,7 +135,7 @@ export async function createUnverifiedUser(username: string, password: string) {
       await prisma.users.create({
         data: {
           username: username,
-          password: await hashPass(password),
+          password: hashPass(password),
         },
       })
     ),
@@ -195,7 +195,7 @@ export async function createAdmin(username: string, password: string) {
       await prisma.users.create({
         data: {
           username: username,
-          password: await hashPass(password),
+          password: hashPass(password),
           verified: true,
           admin: true,
         },
@@ -245,7 +245,7 @@ export async function updatePassword(
     },
   });
 
-  if (!(await isSamePass(oldPassword, user.password)))
+  if (!isSamePass(oldPassword, user.password))
     return errorReturn(errors.incorrect_password);
 
   await prisma.users.update({
@@ -253,7 +253,7 @@ export async function updatePassword(
       id: id,
     },
     data: {
-      password: await hashPass(newPassword),
+      password: hashPass(newPassword),
     },
   });
 
@@ -264,7 +264,7 @@ export async function updatePassword(
       id: id,
     },
     data: {
-      password: await hashPass(newPassword),
+      password: hashPass(newPassword),
     },
   });
 
