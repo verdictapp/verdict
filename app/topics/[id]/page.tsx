@@ -48,7 +48,7 @@ export default async function Topic({ params, searchParams }) {
   };
   return (
     <div className="flex flex-col xl:flex-row pt-24 px-3 lg:px-10 2xl:px-72 w-full xl:space-x-10 2xl:space-x-16">
-      <div className="">
+      <div className="xl:w-7/12">
         <TopicInfo
           id={topic.id}
           title={topic.title}
