@@ -18,6 +18,12 @@ import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 
 export function UpdatePersonalInfoModal({ isOpen, setIsOpen }) {
   const [dob, setDob] = useState("");
+  const [location, setLocation] = useState("");
+  const [Gender, setGender] = useState("prefer-not-to-say");
+
+  const handleSave = () => {
+    // do your thang here
+  };
   return (
     <Dialog open={isOpen} onOpenChange={() => setIsOpen(!isOpen)}>
       <DialogContent className="sm:max-w-[425px]">
@@ -39,14 +45,20 @@ export function UpdatePersonalInfoModal({ isOpen, setIsOpen }) {
             <Label htmlFor="location" className="text-right">
               Location
             </Label>
-            <Input id="location" value="" className="col-span-3" />
+            <Input
+              id="location"
+              value={location}
+              onChange={(e) => setLocation(e.target.value)}
+              className="col-span-3"
+            />
           </div>
           <div className="grid grid-cols-4 items-center gap-4">
             <Label htmlFor="dob" className="text-right">
               Gender
             </Label>
             <RadioGroup
-              onValueChange={(value) => console.log(value)}
+              onValueChange={(value) => setGender(value)}
+              defaultValue="prefer-not-to-say"
               className="flex space-x-3"
             >
               <div className="flex items-center space-x-2">
@@ -65,7 +77,9 @@ export function UpdatePersonalInfoModal({ isOpen, setIsOpen }) {
           </div>
         </div>
         <DialogFooter>
-          <Button type="submit">Save changes</Button>
+          <Button type="submit" onChange={() => handleSave()}>
+            Save changes
+          </Button>
         </DialogFooter>
       </DialogContent>
     </Dialog>

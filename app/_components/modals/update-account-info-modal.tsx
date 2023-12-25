@@ -1,3 +1,5 @@
+"use client";
+
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
@@ -10,8 +12,24 @@ import {
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { ToastAction } from "@/components/ui/toast";
+import { toast } from "@/components/ui/use-toast";
+import { useState } from "react";
 
 export function UpdateAccountInfoModal({ isOpen, setIsOpen }) {
+  // fetch the username and assign it as the usernames' initial value
+  const [username, setUsername] = useState("");
+  const [isUsernameTaken, setIsUsernameTaken] = useState(false);
+
+  const handleSave = () => {
+    //check if the username is taken and if so set the isUsernameTaken state to true or else submit changes
+
+    toast({
+      title: "Success!",
+      description: "Your username has been updated successfully",
+    });
+  };
+
   return (
     <Dialog open={isOpen} onOpenChange={() => setIsOpen(!isOpen)}>
       <DialogContent className="sm:max-w-[425px]">
@@ -26,17 +44,26 @@ export function UpdateAccountInfoModal({ isOpen, setIsOpen }) {
             <Label htmlFor="username" className="text-right">
               Username
             </Label>
-            <Input id="username" value="" className="col-span-3" />
+            <Input
+              id="username"
+              className="col-span-3"
+              value={username}
+              onChange={(e) => setUsername(e.target.value)}
+            />
           </div>
-          <div className="grid grid-cols-4 items-center gap-4">
-            <Label className="text-right"></Label>
-            <span className="text-red-500 font-base text-xs col-span-3">
-              Username already take
-            </span>
-          </div>
+          {!isUsernameTaken && (
+            <div className="grid grid-cols-4 items-center gap-4">
+              <Label className="text-right"></Label>
+              <span className="text-red-500 font-base text-xs col-span-3">
+                Username already take, please try another one.
+              </span>
+            </div>
+          )}
         </div>
         <DialogFooter>
-          <Button type="submit">Save changes</Button>
+          <Button type="submit" onClick={() => handleSave()}>
+            Save changes
+          </Button>
         </DialogFooter>
       </DialogContent>
     </Dialog>
