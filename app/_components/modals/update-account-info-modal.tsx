@@ -1,5 +1,7 @@
 "use client";
 
+import { errors } from "@/app/_enums/enums";
+import api from "@/app/_lib/api";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
@@ -21,9 +23,20 @@ export function UpdateAccountInfoModal({ isOpen, setIsOpen }) {
   const [username, setUsername] = useState("");
   const [isUsernameTaken, setIsUsernameTaken] = useState(false);
 
-  const handleSave = () => {
+  const handleSave = async () => {
     //check if the username is taken and if so set the isUsernameTaken state to true or else submit changes
-
+    let result = await api.put("/user/update-username", {
+      username,
+    });
+    if (!result.data.success) {
+      if (result.data.errorCode === errors.username_taken) {
+        setIsUsernameTaken(true);
+        return;
+      }
+      console.error(`errorCode(${result.data.errorCode})`);
+    }
+    setIsUsernameTaken(false);
+    setIsOpen(false);
     toast({
       title: "Success!",
       description: "Your username has been updated successfully",
@@ -51,7 +64,7 @@ export function UpdateAccountInfoModal({ isOpen, setIsOpen }) {
               onChange={(e) => setUsername(e.target.value)}
             />
           </div>
-          {!isUsernameTaken && (
+          {isUsernameTaken && (
             <div className="grid grid-cols-4 items-center gap-4">
               <Label className="text-right"></Label>
               <span className="text-red-500 font-base text-xs col-span-3">

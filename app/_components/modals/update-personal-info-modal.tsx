@@ -15,14 +15,30 @@ import { Label } from "@/components/ui/label";
 import { DatePicker } from "../date-picker";
 import { useState } from "react";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
+import api from "@/app/_lib/api";
 
 export function UpdatePersonalInfoModal({ isOpen, setIsOpen }) {
   const [dob, setDob] = useState("");
   const [location, setLocation] = useState("");
-  const [Gender, setGender] = useState("prefer-not-to-say");
+  const [gender, setGender] = useState("prefer-not-to-say");
 
-  const handleSave = () => {
-    // do your thang here
+  const handleSave = async () => {
+    let genderValue = undefined;
+    if (gender.toLowerCase() === "male") {
+      genderValue = true;
+    } else if (gender.toLowerCase() === "female") {
+      genderValue = false;
+    }
+    let result = await api.put("/user/update-information", {
+      gender: genderValue,
+      dateOfBirth: dob === "" ? undefined : dob,
+      location: location === "" ? undefined : location,
+    });
+    if (!result.data.success) {
+      console.error(`errorCode${result.data.errorCode}`);
+      return;
+    }
+    setIsOpen(false);
   };
   return (
     <Dialog open={isOpen} onOpenChange={() => setIsOpen(!isOpen)}>
@@ -77,7 +93,7 @@ export function UpdatePersonalInfoModal({ isOpen, setIsOpen }) {
           </div>
         </div>
         <DialogFooter>
-          <Button type="submit" onChange={() => handleSave()}>
+          <Button type="submit" onClick={() => handleSave()}>
             Save changes
           </Button>
         </DialogFooter>
