@@ -1,5 +1,6 @@
 "use client";
 
+import api from "@/app/_lib/api";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
@@ -17,17 +18,27 @@ import { useState } from "react";
 
 export function UpdatePasswordModal({ isOpen, setIsOpen }) {
   const [currentPassword, setCurrentPassword] = useState("");
-  const [newPassword, setnewPassword] = useState("");
-  const [newPasswordConfirmation, setnewPasswordConfirmation] = useState("");
+  const [newPassword, setNewPassword] = useState("");
+  const [newPasswordConfirmation, setNewPasswordConfirmation] = useState("");
   const [arePasswordsAMatch, setArePasswordsAMatch] = useState(true);
 
-  const handleSave = () => {
+  const handleSave = async () => {
     if (newPassword !== newPasswordConfirmation) {
       setArePasswordsAMatch(false);
       return;
     }
+    setArePasswordsAMatch(true);
     // submit changes
-
+    let result = await api.put("/user/update-password", {
+      oldPassword: currentPassword,
+      newPassword: newPassword,
+    });
+    if (!result.data.success) {
+      // current password is not correct
+      console.error(`errorCode(${result.data.errorCode})`);
+      return;
+    }
+    setIsOpen(false);
     toast({
       title: "Success!",
       description: "Your password has been updated successfully",
@@ -67,7 +78,7 @@ export function UpdatePasswordModal({ isOpen, setIsOpen }) {
               className="col-span-3"
               type="password"
               value={newPassword}
-              onChange={(e) => setnewPassword(e.target.value)}
+              onChange={(e) => setNewPassword(e.target.value)}
             />
           </div>
           <div className="grid grid-cols-4 items-center gap-4">
@@ -80,12 +91,22 @@ export function UpdatePasswordModal({ isOpen, setIsOpen }) {
               className="col-span-3"
               type="password"
               value={newPasswordConfirmation}
-              onChange={(e) => setnewPasswordConfirmation(e.target.value)}
+              onChange={(e) => setNewPasswordConfirmation(e.target.value)}
             />
           </div>
+          {!arePasswordsAMatch && (
+            <div className="grid grid-cols-4 items-center gap-4">
+              <Label className="text-right"></Label>
+              <span className="text-red-500 font-base text-xs col-span-3">
+                Password Mismatch.
+              </span>
+            </div>
+          )}
         </div>
         <DialogFooter>
-          <Button type="submit">Save changes</Button>
+          <Button type="submit" onClick={() => handleSave()}>
+            Save changes
+          </Button>
         </DialogFooter>
       </DialogContent>
     </Dialog>
