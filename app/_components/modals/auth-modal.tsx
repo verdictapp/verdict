@@ -20,6 +20,7 @@ import google from "../../../assets/Google.webp";
 import api from "@/app/_lib/api";
 import { GoogleAuthProvider, signInWithPopup } from "firebase/auth";
 import { auth } from "@/app/_firebase/client";
+import { useStore } from "@/app/store";
 
 export function AuthModal({ isOpen, setIsOpen, tab = "login" }) {
   const [username, setUsername] = useState("");
@@ -35,6 +36,7 @@ export function AuthModal({ isOpen, setIsOpen, tab = "login" }) {
       console.error(`errorCode(${result.data.errorCode})`);
       return;
     }
+    useStore.setState({ isLoggedIn: true });
     setIsOpen(false);
   };
 
@@ -48,6 +50,7 @@ export function AuthModal({ isOpen, setIsOpen, tab = "login" }) {
       console.error(`errorCode(${result.data.errorCode})`);
       return;
     }
+    useStore.setState({ isLoggedIn: true });
     setIsOpen(false);
   };
   const handleGoogleLogin = async () => {
@@ -60,6 +63,7 @@ export function AuthModal({ isOpen, setIsOpen, tab = "login" }) {
           console.error(`errorCode(${result.data.errorCode})`);
           return;
         }
+        useStore.setState({ isLoggedIn: true });
         setIsOpen(false);
       })
       .catch((error) => {

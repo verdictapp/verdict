@@ -3,8 +3,8 @@
 import React, { useState } from "react";
 import OptionProgress from "./OptionProgress";
 import { AuthModal } from "./modals/auth-modal";
-import { useCookies } from "next-client-cookies";
 import api from "../_lib/api";
+import { useStore } from "../store";
 
 const TopicInfo = ({
   id,
@@ -16,10 +16,9 @@ const TopicInfo = ({
   votedOn,
 }) => {
   const [isAuthOpen, setIsAuthOpen] = useState(false);
-  const cookies = useCookies();
-
+  const { isLoggedIn } = useStore();
   const handleVote = async (vid) => {
-    if (!cookies.get("authToken")) {
+    if (!isLoggedIn) {
       setIsAuthOpen(true);
       return;
     }

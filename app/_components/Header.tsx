@@ -10,12 +10,16 @@ import logo from "../../assets/logo.png";
 import { useRouter } from "next/navigation";
 import { AuthModal } from "./modals/auth-modal";
 import { Button } from "@/components/ui/button";
+import { useStore } from "../store";
 
 const Header = () => {
   const router = useRouter();
   const [isAuthOpen, setIsAuthOpen] = useState(false);
   const [authMethod, setAuthMethod] = useState("login");
-  const isLoggedIn = false;
+  const { isLoggedIn } = useStore();
+  console.log("====================================");
+  console.log(isLoggedIn);
+  console.log("====================================");
   return (
     <>
       <nav className="w-full px-1 md:px-3 py-2 border-b md:border-0 flex justify-between bg-primary-foreground fixed z-10">

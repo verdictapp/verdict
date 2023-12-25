@@ -2,7 +2,9 @@ import { Toaster } from "@/components/ui/toaster";
 import Header from "./_components/Header";
 import "./globals.css";
 import { Inter } from "next/font/google";
-import { CookiesProvider } from "next-client-cookies/server";
+import { cookies } from "next/headers";
+import { useStore } from "./store";
+import StoreInitializer from "./_components/StoreInitializer";
 
 export const metadata = {
   metadataBase: new URL("https://postgres-prisma.vercel.app"),
@@ -22,15 +24,18 @@ export default function RootLayout({
 }: {
   children: React.ReactNode;
 }) {
+  useStore.setState({
+    isLoggedIn: !!cookies().get("authToken"),
+  });
+
   return (
-    <CookiesProvider>
-      <html lang="en">
-        <body className={`${inter.variable} dark relative`}>
-          <Header />
-          {children}
-          <Toaster />
-        </body>
-      </html>
-    </CookiesProvider>
+    <html lang="en">
+      <body className={`${inter.variable} dark relative`}>
+        <StoreInitializer isLoggedIn={!!cookies().get("authToken")} />
+        <Header />
+        {children}
+        <Toaster />
+      </body>
+    </html>
   );
 }
