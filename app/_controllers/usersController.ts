@@ -173,6 +173,7 @@ export async function createVerifiedUser(
       await prisma.users.create({
         data: {
           email: email,
+          username: email.split("@")[0],
           verified: true,
         },
       })
