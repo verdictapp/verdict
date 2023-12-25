@@ -11,11 +11,31 @@ export function successLoginResponse(tokenObject?: { token: string }) {
           secure: true,
           domain: "localhost",
           path: "/",
+          maxAge: 2147483647,
         }),
       },
     }
   );
 }
+
+export function successLogoutResponse() {
+  return new Response(
+    JSON.stringify({
+      success: true,
+    }),
+    {
+      headers: {
+        "Set-Cookie": serialize("authToken", "", {
+          secure: true,
+          domain: "localhost",
+          path: "/",
+          maxAge: -1,
+        }),
+      },
+    }
+  );
+}
+
 export function successResponse(result?: any) {
   return new Response(
     JSON.stringify({
