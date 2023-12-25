@@ -50,7 +50,9 @@ export default async function Home({ searchParams }) {
           title: topicInfo.options[option],
           percentage: percentage,
           isVotedOn:
-            topic.votes.length !== 0 ? topic.votes[0].vote === option : false,
+            topic.votes && topic.votes.length !== 0
+              ? topic.votes[0].vote === option
+              : false,
         };
       }),
     };

@@ -44,8 +44,8 @@ export async function middleware(request: NextRequest) {
     let newHref =
       request.nextUrl.href +
       (request.nextUrl.href.includes("?")
-        ? `&userId=${result.returned.id}`
-        : `?userId=${result.returned.id}`);
+        ? `&userId=${result.returned?.id || undefined}`
+        : `?userId=${result.returned?.id || undefined}`);
     return NextResponse.rewrite(newHref);
   }
 }
