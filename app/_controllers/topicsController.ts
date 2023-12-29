@@ -125,6 +125,40 @@ export async function showTopics(
   return successReturn(result);
 }
 
+export async function showTopic(id: number) {
+  let result = await prisma.topics.findFirst({
+    where: {
+      id: id,
+    },
+    select: {
+      id: true,
+      image: true,
+      createdAt: true,
+      priority: true,
+      state: true,
+      topicInfo: true,
+      tagged: {
+        select: {
+          id: true,
+          tag: {
+            select: {
+              id: true,
+              tagInfo: {
+                where: {
+                  languages: {
+                    code: "en",
+                  },
+                },
+              },
+            },
+          },
+        },
+      },
+    },
+  });
+  return successReturn(result);
+}
+
 /**
  * fetch the stats and the timed stats of a topic
  * @param id the topic Id
