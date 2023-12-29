@@ -84,10 +84,12 @@ export async function availableTags(topicId: number, take?: any, skip?: any) {
   return successReturn(result);
 }
 
-export async function unlinkTagTopic(linkId: number) {
-  await prisma.tagged.delete({
+export async function unlinkTagTopic(linkIds: Array<number>) {
+  await prisma.tagged.deleteMany({
     where: {
-      id: linkId,
+      id: {
+        in: linkIds,
+      },
     },
   });
   return successReturn();
