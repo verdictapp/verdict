@@ -3,12 +3,20 @@
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
+import { CheckCircle, StopCircle, XCircle } from "lucide-react";
 import { useEffect, useState } from "react";
+import useDidUpdateEffect from "../hooks/useDidUpdateEffect";
 
-const TopicInfoItem = ({ languageId, language, updateTopicItems }) => {
-  const [title, setTitle] = useState("");
-  const [description, setDescription] = useState("");
-  const [options, setOptions] = useState([]);
+const TopicInfoItem = ({
+  languageId,
+  language,
+  updateTopicItems,
+  topicInfo = { title: "", description: "", options: {} as Object },
+}) => {
+  const [title, setTitle] = useState(topicInfo.title);
+  const [description, setDescription] = useState(topicInfo.description);
+  const [options, setOptions] = useState(Object.values(topicInfo.options));
+  const [areChangedSaved, setAreChangedSaved] = useState(true);
 
   const updateTopicInfoLocal = (i) => {
     setOptions((old) => {
@@ -26,6 +34,12 @@ const TopicInfoItem = ({ languageId, language, updateTopicItems }) => {
     console.log("description", description);
     console.log("options", options);
   };
+
+  useDidUpdateEffect(() => {
+    if (areChangedSaved) {
+      setAreChangedSaved(false);
+    }
+  }, [title, description, options]);
 
   return (
     <div className="bg-primary-foreground my-10 pb-5 rounded-md">
@@ -87,14 +101,34 @@ const TopicInfoItem = ({ languageId, language, updateTopicItems }) => {
         >
           Add Option
         </Button>
-        <Button
-          className="w-full mt-5"
-          onClick={() =>
-            updateTopicItems(languageId, title, description, options)
-          }
-        >
-          Save {language}
-        </Button>
+        <div className="flex justify-end">
+          <div
+            className={`${
+              areChangedSaved ? "text-green-500" : "text-red-500"
+            } mt-6 font-semibold mx-5 flex space-x-2`}
+          >
+            {areChangedSaved ? (
+              <>
+                <CheckCircle />
+                <span>Up to date</span>
+              </>
+            ) : (
+              <>
+                <XCircle />
+                <span>Unsaved Changes</span>
+              </>
+            )}
+          </div>
+          <Button
+            className="mt-5"
+            onClick={() => {
+              updateTopicItems(languageId, title, description, options);
+              setAreChangedSaved(true);
+            }}
+          >
+            Save {language}
+          </Button>
+        </div>
       </div>
     </div>
   );

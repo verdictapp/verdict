@@ -102,6 +102,7 @@ export async function showTopics(
       },
       tagged: {
         select: {
+          id: true,
           tag: {
             select: {
               id: true,
