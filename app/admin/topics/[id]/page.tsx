@@ -53,32 +53,67 @@ const page = () => {
     );
   };
 
-  const getTopic = () => {
+  const getTopic = async () => {
     // get topic by id
+    let result = await api.get(`/admin/topics/${id}`);
+    if (!result.data.success) {
+      console.error(`errorCode(${result.data.errorCode})`);
+      return;
+    }
     // assign topic image to thumbnail
+    setThumbnail(result.data.image);
     // assign topic priority to priority
+    setPriority(result.data.priority);
     //assign topic state to tIState
+    setTIState(result.data.state);
     //assign topic infos to topicItems
+    setTopicItems(result.data.topicInfo);
     //assign tagged to topicTags
+    setTopicTags(result.data.tagged);
   };
 
-  const getAvailableTags = () => {
+  const getAvailableTags = async () => {
     //get available tags and assign to availableTags
+    let result = await api.get(`/admin/topics/${id}/available-tags`);
+    if (!result.data.success) {
+      console.error(`errorCode(${result.data.errorCode})`);
+      return;
+    }
+    setAvailableTags(result.data);
   };
 
   const handleSaveTopic = async () => {
     //update topic details
-
+    let result = await api.put(`/admin/topics/${id}/update`, {
+      image: thumbnail,
+      priority: priority,
+      state: tIState,
+    });
+    if (!result.data.success) {
+      console.error(`errorCode${result.data.errorCode}`);
+      return;
+    }
     toast({
       title: "Success!",
       description: "Topic has been created successfully",
     });
   };
 
-  const handleSaveTopicInfo = (langID, title, description, options) => {
+  const handleSaveTopicInfo = async (langID, title, description, options) => {
     let ops = Object.assign({}, options);
 
     //submit the topic info
+    let result = await api.post(`/admin/topics/${id}/add-topic-info`, {
+      languageId: langID,
+      title: title,
+      description: description,
+      options: ops,
+    });
+
+    if (!result.data.success) {
+      console.error(`errorCode(${result.data.errorCode})`);
+      return;
+    }
   };
 
   const handleToAddTag = (tid) => {
@@ -113,14 +148,32 @@ const page = () => {
     setIsAddTagOpen(true);
   };
 
-  const handleSaveTags = () => {
+  const handleSaveTags = async () => {
+    let error = false;
     if (tagsToAdd) {
       // submit the tagsToAdd
+      let addResult = await api.post(`/admin/topics/${id}/add-tags`, {
+        tags: tagsToAdd,
+      });
+      if (!addResult.data.success) {
+        console.error(`addResult => errorCode(${addResult.data.errorCode})`);
+        error = true;
+      }
     }
 
     if (tagsToDelete) {
       // submit the tagsToDelete
+      let deleteResult = await api.post(`/admin/tagged/delete`, {
+        taggedIds: tagsToDelete,
+      });
+      if (!deleteResult.data.success) {
+        console.error(
+          `deleteResult => errorCode(${deleteResult.data.errorCode})`
+        );
+        error = true;
+      }
     }
+    if (error) return;
 
     toast({
       title: "Success!",

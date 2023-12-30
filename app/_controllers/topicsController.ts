@@ -238,6 +238,25 @@ export async function deleteTopic(id: number) {
   return successReturn();
 }
 
+export async function updateTopic(
+  id: number,
+  image: string,
+  priority: number,
+  state: 0 | 1
+) {
+  await prisma.topics.update({
+    where: {
+      id: id,
+    },
+    data: {
+      image: image,
+      priority: priority,
+      state: state,
+    },
+  });
+  return successReturn();
+}
+
 /**
  * update a topic's image by it's id
  * @param id
