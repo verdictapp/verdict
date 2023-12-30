@@ -79,6 +79,15 @@ export async function availableTags(topicId: number, take?: any, skip?: any) {
         },
       },
     },
+    include: {
+      tagInfo: {
+        where: {
+          languages: {
+            code: "en",
+          },
+        },
+      },
+    },
     ...getPagination(take, skip),
   });
   return successReturn(result);
