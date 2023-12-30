@@ -61,15 +61,18 @@ const page = () => {
       return;
     }
     // assign topic image to thumbnail
-    setThumbnail(result.data.image);
+    setThumbnail(result.data.result.image);
     // assign topic priority to priority
-    setPriority(result.data.priority);
+    setPriority(result.data.result.priority);
     //assign topic state to tIState
-    setTIState(result.data.state);
+    setTIState(result.data.result.state);
     //assign topic infos to topicItems
-    setTopicItems(result.data.topicInfo);
+    setTopicItems(result.data.result.topicInfo);
     //assign tagged to topicTags
-    setTopicTags(result.data.tagged);
+    setTopicTags(result.data.result.tagged);
+
+    console.log("infos", topicItems);
+    console.log("topic tags", topicTags);
   };
 
   const getAvailableTags = async () => {
@@ -79,7 +82,9 @@ const page = () => {
       console.error(`errorCode(${result.data.errorCode})`);
       return;
     }
-    setAvailableTags(result.data);
+    console.log("available tags", result.data.result);
+
+    setAvailableTags(result.data.result);
   };
 
   const handleSaveTopic = async () => {
@@ -232,7 +237,7 @@ const page = () => {
           <div className="p-3 pt-5">
             <h2 className="text-lg font-semibold">Topic Tags</h2>
             <div className="flex flex-wrap gap-x-3 mt-5">
-              {topicTags.map((tagged, i) => (
+              {topicTags?.map((tagged, i) => (
                 <Button
                   onClick={() => handleToDeleteTag(tagged.id)}
                   variant={
@@ -256,7 +261,7 @@ const page = () => {
           <div className="p-3 pt-5">
             <h2 className="text-lg font-semibold">Available Tags</h2>
             <div className="flex flex-wrap gap-x-3 mt-5">
-              {availableTags.map((tag, i) => (
+              {availableTags?.map((tag, i) => (
                 <Button
                   onClick={() => handleToAddTag(tag.id)}
                   variant={
@@ -291,7 +296,7 @@ const page = () => {
             languageId={lang.id}
             language={lang.language}
             updateTopicItems={handleSaveTopicInfo}
-            topicInfo={topicItems.find((ti) => (ti.languageId = lang.id))}
+            topicInfo={topicItems?.find((ti) => (ti.languageId = lang.id))}
           />
         ))}
       </div>

@@ -25,6 +25,11 @@ export function UserMenu() {
   const [isUpdateAccountInfo, setIsUpdateAccountInfo] = useState(false);
   const [isUpdatePersonalInfo, setIsUpdatePersonalInfo] = useState(false);
   const [isUpdatePassword, setIsUpdatePassword] = useState(false);
+
+  const handleLogout = () => {
+    //logout
+  };
+
   return (
     <>
       <DropdownMenu>
@@ -56,7 +61,9 @@ export function UserMenu() {
             <DropdownMenuItem>Verify Account</DropdownMenuItem>
           </DropdownMenuGroup>
           <DropdownMenuSeparator />
-          <DropdownMenuItem>Log out</DropdownMenuItem>
+          <DropdownMenuItem onClick={() => handleLogout()}>
+            Log out
+          </DropdownMenuItem>
         </DropdownMenuContent>
       </DropdownMenu>
       <UpdateAccountInfoModal
