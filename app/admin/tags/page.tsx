@@ -1,6 +1,7 @@
 "use client";
 
 import { ConfirmationDialog } from "@/app/_components/modals/ConfirmationDialog";
+import AddEditTagTranslationModal from "@/app/_components/modals/add-edit-tag-translation-modal";
 import AddTagModal from "@/app/_components/modals/add-tag-modal";
 import UpdateTagModal from "@/app/_components/modals/update-tag-modal";
 import api from "@/app/_lib/api";
@@ -16,7 +17,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { Edit, Trash } from "lucide-react";
+import { Edit, Languages, Trash } from "lucide-react";
 import { useEffect, useState } from "react";
 export const dynamic = "force-dynamic";
 
@@ -28,6 +29,8 @@ const Tags = () => {
   const [filteredTags, setFilteredTags] = useState(tags);
   const [isAddTagOpen, setIsAddTagOpen] = useState(false);
   const [isUpdateTagOpen, setIsUpdateTagOpen] = useState(false);
+  const [isTagTranslationModalOpen, setIsTagTranslationModalOpen] =
+    useState(false);
   const [selectedTag, setSelectedTag] = useState({
     id: 0,
     name: "",
@@ -115,6 +118,17 @@ const Tags = () => {
                     }
                     onConfirm={() => handleDeleteTag(tag.id)}
                   />
+                  <Languages
+                    className="cursor-pointer"
+                    onClick={() => {
+                      setSelectedTag({
+                        id: tag.id,
+                        name: tag.name,
+                        priority: tag.priority,
+                      });
+                      setIsTagTranslationModalOpen(true);
+                    }}
+                  />
                 </TableCell>
               </TableRow>
             ))}
@@ -140,6 +154,14 @@ const Tags = () => {
           setIsOpen={setIsUpdateTagOpen}
           loadNewTags={getTags}
           selectedTag={selectedTag}
+        />
+      )}
+      {isTagTranslationModalOpen && (
+        <AddEditTagTranslationModal
+          isOpen={isTagTranslationModalOpen}
+          setIsOpen={setIsTagTranslationModalOpen}
+          tagId={selectedTag.id}
+          loadNewTags={getTags}
         />
       )}
     </>

@@ -32,7 +32,7 @@ const AddEditTagTranslationModal = ({
   const { toast } = useToast();
 
   const getTagTranslations = () => {
-    // get tag translations and assign to tagTranslations state
+    // get tag translations bg tagId and assign to tagTranslations state
   };
 
   const getLanguages = async () => {
@@ -51,10 +51,13 @@ const AddEditTagTranslationModal = ({
         };
       })
     );
+    console.log(result.data);
   };
 
   const handleSave = async () => {
     // Submit Tag
+
+    //note: selectedLanguage contains the only the languageId
 
     toast({
       title: "Success!",
@@ -70,12 +73,6 @@ const AddEditTagTranslationModal = ({
     getLanguages();
     getTagTranslations();
   }, []);
-
-  useEffect(() => {
-    setName(
-      tagTranslations.find((tt) => tt.languageId === selectedLanguage.id).name
-    );
-  }, [selectedLanguage]);
 
   return (
     <Dialog open={isOpen} onOpenChange={() => setIsOpen(!isOpen)}>
@@ -94,6 +91,14 @@ const AddEditTagTranslationModal = ({
             <TagLanguageSelect
               values={languages}
               setSelectedLanguage={setSelectedLanguage}
+              OnAfterChange={(value) => {
+                console.log("v", value);
+                let currentTrans = tagTranslations.find(
+                  (tt) => tt.languageId === value
+                );
+
+                setName(currentTrans ? currentTrans.name : "");
+              }}
             />
           </div>
           <div className="grid grid-cols-4 items-center gap-4">
