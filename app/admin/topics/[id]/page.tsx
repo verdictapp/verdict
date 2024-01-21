@@ -275,7 +275,7 @@ const page = () => {
                   ) : (
                     <Circle className="mr-2 h-4 w-4" />
                   )}{" "}
-                  {tag.name}
+                  {tag?.tagInfo[0]?.name}
                 </Button>
               ))}
               <Button onClick={() => handleAddTag()}>
