@@ -22,10 +22,7 @@ import { useEffect, useState } from "react";
 export const dynamic = "force-dynamic";
 
 const Tags = () => {
-  const [tags, setTags] = useState([
-    { id: 1, name: "tag 1", priority: 10 },
-    { id: 2, name: "tag 2", priority: 10 },
-  ]);
+  const [tags, setTags] = useState([]);
   const [filteredTags, setFilteredTags] = useState(tags);
   const [isAddTagOpen, setIsAddTagOpen] = useState(false);
   const [isUpdateTagOpen, setIsUpdateTagOpen] = useState(false);
@@ -35,6 +32,7 @@ const Tags = () => {
     id: 0,
     name: "",
     priority: 0,
+    defaultTagInfoId: undefined,
   });
 
   const handleFilterTags = (value) => {
@@ -53,6 +51,7 @@ const Tags = () => {
         id: tag.id,
         name: tagInfo.name,
         priority: tag.priority,
+        defaultTagInfoId: tagInfo.id,
       };
     });
     setTags(tags);
@@ -108,6 +107,7 @@ const Tags = () => {
                         id: tag.id,
                         name: tag.name,
                         priority: tag.priority,
+                        defaultTagInfoId: tag.defaultTagInfoId,
                       });
                     }}
                   />
@@ -125,6 +125,7 @@ const Tags = () => {
                         id: tag.id,
                         name: tag.name,
                         priority: tag.priority,
+                        defaultTagInfoId: tag.defaultTagInfoId,
                       });
                       setIsTagTranslationModalOpen(true);
                     }}

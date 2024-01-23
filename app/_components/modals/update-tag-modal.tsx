@@ -1,5 +1,6 @@
 "use client";
 
+import api from "@/app/_lib/api";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
@@ -24,6 +25,15 @@ const UpdateTagModal = ({ isOpen, setIsOpen, selectedTag, loadNewTags }) => {
 
   const handleSave = async () => {
     // Submit Tag
+
+    // update name of default language
+    await api.put(`/admin/tag-info/${selectedTag.defaultTagInfoId}/update`, {
+      name: name,
+    });
+
+    await api.put(`/admin/tags/${selectedTag.id}/update`, {
+      priority: priority,
+    });
 
     toast({
       title: "Success!",
