@@ -2,6 +2,20 @@ import prisma from "@/app/_lib/prisma";
 import { errorReturn, successReturn } from "../_lib/controllerReturnGenerator";
 import { errors } from "../_enums/enums";
 import getPagination from "../_lib/paginationHelper";
+
+export async function getDefaultLanguage() {
+  let defaultLanguage = await prisma.languages.findFirst({
+    where: {
+      code: "en",
+    },
+  });
+  if (!defaultLanguage) {
+    return errorReturn(errors.default_language_not_found);
+  }
+
+  return successReturn(defaultLanguage.id);
+}
+
 /**
  * get all languages
  * @returns languages array

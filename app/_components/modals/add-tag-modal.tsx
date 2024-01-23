@@ -1,5 +1,6 @@
 "use client";
 
+import api from "@/app/_lib/api";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
@@ -24,6 +25,23 @@ const AddTagModal = ({ isOpen, setIsOpen, loadNewTags }) => {
 
   const handleSave = async () => {
     // Submit Tag
+    let defaultLanguageId = await api.get(`/public/default`);
+    if (!defaultLanguageId.data.success) {
+      console.error(
+        `couldn't find the default language, errorCode(${defaultLanguageId.data.errorCode})`
+      );
+      return;
+    }
+
+    await api.post(`/admin/tags/create`, {
+      data: [
+        {
+          languageId: defaultLanguageId.data.result,
+          name: name,
+        },
+      ],
+      priority: priority,
+    });
 
     toast({
       title: "Success!",

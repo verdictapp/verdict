@@ -16,6 +16,7 @@ export enum errors {
   invalid_firebase_user_uid,
   email_not_verified,
   auth_provider_not_implemented,
+  default_language_not_found,
 }
 
 export enum userFilterFlags {
