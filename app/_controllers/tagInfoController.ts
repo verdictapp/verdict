@@ -44,3 +44,12 @@ export async function deleteTagInfo(id: number) {
   });
   return successReturn();
 }
+
+export async function getTranslationsByTagId(tagId: number) {
+  let result = await prisma.tagInfo.findMany({
+    where: {
+      tagId: tagId,
+    },
+  });
+  return successReturn(result);
+}

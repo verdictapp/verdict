@@ -31,8 +31,14 @@ const AddEditTagTranslationModal = ({
   const [selectedLanguage, setSelectedLanguage] = useState({ id: 0, name: "" });
   const { toast } = useToast();
 
-  const getTagTranslations = () => {
+  const getTagTranslations = async () => {
     // get tag translations bg tagId and assign to tagTranslations state
+    let result = await api.get(`/admin/tags/${tagId}/translations`);
+    if (!result.data.success) {
+      console.error(`errorCode(${result.data.errorCode})`);
+      return;
+    }
+    setTagTranslations(result.data.result);
   };
 
   const getLanguages = async () => {
@@ -56,8 +62,31 @@ const AddEditTagTranslationModal = ({
 
   const handleSave = async () => {
     // Submit Tag
-
     //note: selectedLanguage contains the only the languageId
+    let translationId = tagTranslations.filter((tagInfo) => {
+      if (tagInfo.languageId === selectedLanguage) {
+        // updating this language
+        return tagInfo.id;
+      }
+    });
+    if (translationId.length > 1) {
+      console.error("Found more than one language that has the same ID");
+      return;
+    }
+    if (translationId.length === 1) {
+      // update
+      let result = await api.put(`/admin/tag-info/${translationId[0]}/update`, {
+        name: name,
+      });
+      if (!result.data.success) return;
+    } else {
+      // create
+      let result = await api.post(`/admin/tags/${tagId}/add-tag-info`, {
+        languageId: selectedLanguage,
+        name: name,
+      });
+      if (!result.data.success) return;
+    }
 
     toast({
       title: "Success!",
