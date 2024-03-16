@@ -60,7 +60,10 @@ export default async function Topic({ params, searchParams }) {
           key={topic.id}
         />
       </div>
-      <TopicStats />
+      <TopicStats
+        options={topic.options}
+        timedStats={result.returned.timedStats}
+      />
     </div>
   );
 }
