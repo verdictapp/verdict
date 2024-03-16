@@ -20,14 +20,22 @@ import { UpdateAccountInfoModal } from "./modals/update-account-info-modal";
 import { useState } from "react";
 import { UpdatePersonalInfoModal } from "./modals/update-personal-info-modal";
 import { UpdatePasswordModal } from "./modals/update-password-modal";
+import { useStore } from "../store";
+import api from "../_lib/api";
 
 export function UserMenu() {
   const [isUpdateAccountInfo, setIsUpdateAccountInfo] = useState(false);
   const [isUpdatePersonalInfo, setIsUpdatePersonalInfo] = useState(false);
   const [isUpdatePassword, setIsUpdatePassword] = useState(false);
 
-  const handleLogout = () => {
+  const handleLogout = async () => {
     //logout
+    const result = await api.post("/logout");
+    if (result.data.success) {
+      useStore.setState({
+        isLoggedIn: false,
+      });
+    }
   };
 
   return (
