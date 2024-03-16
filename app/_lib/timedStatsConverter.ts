@@ -2,9 +2,19 @@ import moment from "moment";
 
 // Fake Data
 // var data = {
-//   "0": { "23/1/2024": 5, "24/1/2024": 1, "26/2/2024": 2 },
+//   "0": {
+//     "21/1/2024": 5,
+//     "24/1/2024": 1,
+//     "26/2/2024": 2,
+//     "28/2/2024": 2,
+//     "1/3/2024": 2,
+//     "2/3/2024": 2,
+//     "4/3/2024": 2,
+//     "5/3/2024": 2,
+//     "5/4/2024": 5,
+//     "6/4/2024": 2,
+//   },
 //   "1": { "23/1/2024": 4, "24/1/2024": 1, "25/1/2024": 1, "27/2/2024": 1 },
-//   "2": { "23/1/2024": 2, "24/1/2024": 1, "25/1/2024": 2, "28/2/2024": 1 },
 // };
 
 export default function timedStatsConverter(timedStats) {
@@ -57,12 +67,19 @@ function formatDate(date: moment.Moment, withDay: boolean = true) {
  * @param dateList
  */
 function walk(min: moment.Moment, max: moment.Moment, dateList) {
-  let recommendedTimeSlicing =
-    Math.abs(min.diff(max, "days")) > 30 ? "monthly" : "daily";
+  let recommendedTimeSlicing = "daily";
+  let numOfDays = Math.abs(min.diff(max, "days"));
+  if (numOfDays > 62) {
+    recommendedTimeSlicing = "monthly";
+  } else if (numOfDays > 30) {
+    recommendedTimeSlicing = "weekly";
+  }
 
   let data = [];
   let monthlyData = [];
+  let weeklyData = [];
   let currentMonth = moment(min);
+  let currentWeek = moment(min);
   // accumulate counter
   let values = new Array(Object.keys(dateList).length).fill(0);
 
@@ -85,6 +102,11 @@ function walk(min: moment.Moment, max: moment.Moment, dateList) {
         name: formatDate(currentMonth, false),
         ...values,
       });
+
+      weeklyData.push({
+        name: "W" + currentWeek.week() + "|" + currentWeek.year(),
+        ...values,
+      });
     } else {
       min.add(1, "day");
 
@@ -95,7 +117,15 @@ function walk(min: moment.Moment, max: moment.Moment, dateList) {
         });
         currentMonth = moment(min);
       }
+
+      if (!currentWeek.isSame(min, "week")) {
+        weeklyData.push({
+          name: "W" + currentWeek.week() + " " + currentWeek.year(),
+          ...values,
+        });
+        currentWeek = moment(min);
+      }
     }
   }
-  return { data, monthlyData, recommendedTimeSlicing };
+  return { data, monthlyData, weeklyData, recommendedTimeSlicing };
 }

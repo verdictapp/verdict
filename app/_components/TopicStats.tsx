@@ -14,7 +14,7 @@ import {
 import timedStatsConverter from "../_lib/timedStatsConverter";
 
 const TopicStats = ({ options, timedStats }) => {
-  let { data, monthlyData, recommendedTimeSlicing } =
+  let { data, weeklyData, monthlyData, recommendedTimeSlicing } =
     timedStatsConverter(timedStats);
   let colors = ["#8884d8", "#82ca9d", "#61c0f7", "#dcf15f", "#f1a15f"];
   const [timeSlicing, setTimeSlicing] = useState(recommendedTimeSlicing);
@@ -36,6 +36,16 @@ const TopicStats = ({ options, timedStats }) => {
           </button>
           <button
             className={`border-b ${
+              timeSlicing === "weekly"
+                ? " border-b-popover-foreground"
+                : "border-b-transparent"
+            }`}
+            onClick={() => setTimeSlicing("weekly")}
+          >
+            Weekly
+          </button>
+          <button
+            className={`border-b ${
               timeSlicing === "monthly"
                 ? " border-b-popover-foreground"
                 : "border-b-transparent"
@@ -51,7 +61,13 @@ const TopicStats = ({ options, timedStats }) => {
           <LineChart
             width={500}
             height={300}
-            data={timeSlicing === "daily" ? data : monthlyData}
+            data={
+              timeSlicing === "daily"
+                ? data
+                : timeSlicing === "weekly"
+                ? weeklyData
+                : monthlyData
+            }
             margin={{
               top: 5,
               right: 30,
