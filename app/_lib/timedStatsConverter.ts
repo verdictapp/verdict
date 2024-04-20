@@ -1,28 +1,28 @@
 import moment from "moment";
 
 // Fake Data
-// var data = {
-//   "0": {
-//     "21/1/2024": 5,
-//     "24/1/2024": 1,
-//     "26/2/2024": 2,
-//     "28/2/2024": 2,
-//     "1/3/2024": 2,
-//     "2/3/2024": 2,
-//     "4/3/2024": 2,
-//     "5/3/2024": 2,
-//     "5/4/2024": 5,
-//     "6/4/2024": 2,
-//   },
-//   "1": { "23/1/2024": 4, "24/1/2024": 1, "25/1/2024": 1, "27/2/2024": 1 },
-// };
+var data = {
+  "0": {
+    "21/1/2024": 5,
+    "24/1/2024": 1,
+    "26/2/2024": 2,
+    "28/2/2024": 2,
+    "1/3/2024": 2,
+    "2/3/2024": 2,
+    "4/3/2024": 2,
+    "5/3/2024": 2,
+    "5/4/2024": 5,
+    "6/4/2024": 2,
+  },
+  "1": { "23/1/2024": 4, "24/1/2024": 1, "25/1/2024": 1, "27/2/2024": 1 },
+};
 
 export default function timedStatsConverter(timedStats) {
   // Fake Data Testing
-  // let [min, max] = minMax(data);
-  // return walk(min, max, data);
-  let [min, max] = minMax(timedStats);
-  return walk(min, max, timedStats);
+  let [min, max] = minMax(data);
+  return walk(min, max, data);
+  // let [min, max] = minMax(timedStats);
+  // return walk(min, max, timedStats);
 }
 
 /**
